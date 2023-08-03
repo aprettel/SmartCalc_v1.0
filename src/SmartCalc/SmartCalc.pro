@@ -9,15 +9,18 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    creditwindow.cpp \
     calculator.c \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    creditwindow.h \
     calculator.h \
     mainwindow.h
 
 FORMS += \
+    creditwindow.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <creditwindow.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,6 +18,9 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private slots:
+  // Слоты от кнопок главного окна
+  void on_creditButton_clicked();
+
   void num_and_funcs_click();
   void C_click();
   void AC_click();
@@ -24,5 +28,6 @@ class MainWindow : public QMainWindow {
 
  private:
   Ui::MainWindow *ui;
+  AnotherWindow *creditWindow;
 };
 #endif  // MAINWINDOW_H

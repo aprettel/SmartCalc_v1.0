@@ -9,26 +9,32 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>477</width>
-    <height>295</height>
+    <width>540</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>150</width>
+    <height>200</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SmartCalc</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>431</width>
+      <x>50</x>
+      <y>39</y>
+      <width>441</width>
       <height>61</height>
      </rect>
     </property>
@@ -63,10 +69,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>91</y>
-      <width>431</width>
-      <height>151</height>
+      <x>50</x>
+      <y>100</y>
+      <width>441</width>
+      <height>152</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -1250,6 +1256,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QRadioButton" name="creditButton">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>10</y>
+      <width>180</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Кредитный калькулятор</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
