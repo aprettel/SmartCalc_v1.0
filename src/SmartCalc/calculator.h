@@ -7,13 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-int is_operator(char c);
-int is_operand(char c);
+double calculate_operand(const char* expression, size_t* index);
+double perform_operation(double operand1, double operand2, char oper);
 int get_priority(char oper);
-double check_operation(char* tmp_expression, double operand1, double operand2,
-                       char oper);
-double binary_operation(double operand1, double operand2, char oper);
-double unary_operation(double operand1, char oper);
+int is_operator(char ch);
 double calculate_expression(const char* expression);
 
 #endif  // CALCULATOR_H

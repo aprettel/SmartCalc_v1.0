@@ -65,27 +65,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::num_and_funcs_click() {
   QPushButton* button = (QPushButton*)sender();
-  if (button->text() == "cos(x)") {
-       ui->lineEdit->setText(ui->lineEdit->text() + 'c');
-  } else if (button->text() == "sin(x)") {
-      ui->lineEdit->setText(ui->lineEdit->text() + 's');
-  } else if (button->text() == "tan(x)") {
-      ui->lineEdit->setText(ui->lineEdit->text() + 't');
-  } else if (button->text() == "acos(x)") {
-      ui->lineEdit->setText(ui->lineEdit->text() + 'C');
-  } else if (button->text() == "asin(x)") {
-     ui->lineEdit->setText(ui->lineEdit->text() + 'S');
-  } else if (button->text() == "atan(x)") {
-     ui->lineEdit->setText(ui->lineEdit->text() + 'T');
-  } else if (button->text() == "sqrt(x)") {
-     ui->lineEdit->setText(ui->lineEdit->text() + 'Q');
-  } else if (button->text() == "ln(x)") {
-      ui->lineEdit->setText(ui->lineEdit->text() + 'l');
-  } else if (button->text() == "log(x)") {
-      ui->lineEdit->setText(ui->lineEdit->text() + 'L');
-  } else {
+//  if (button->text() == "cos(x)") {
+//       ui->lineEdit->setText(ui->lineEdit->text() + 'c');
+//  } else if (button->text() == "sin(x)") {
+//      ui->lineEdit->setText(ui->lineEdit->text() + 's');
+//  } else if (button->text() == "tan(x)") {
+//      ui->lineEdit->setText(ui->lineEdit->text() + 't');
+//  } else if (button->text() == "acos(x)") {
+//      ui->lineEdit->setText(ui->lineEdit->text() + 'C');
+//  } else if (button->text() == "asin(x)") {
+//     ui->lineEdit->setText(ui->lineEdit->text() + 'S');
+//  } else if (button->text() == "atan(x)") {
+//     ui->lineEdit->setText(ui->lineEdit->text() + 'T');
+//  } else if (button->text() == "sqrt(x)") {
+//     ui->lineEdit->setText(ui->lineEdit->text() + 'Q');
+//  } else if (button->text() == "ln(x)") {
+//      ui->lineEdit->setText(ui->lineEdit->text() + 'l');
+//  } else if (button->text() == "log(x)") {
+//      ui->lineEdit->setText(ui->lineEdit->text() + 'L');
+//  } else {
       ui->lineEdit->setText(ui->lineEdit->text() + button->text());
-  }
+//  }
 }
 
 void MainWindow::C_click()
