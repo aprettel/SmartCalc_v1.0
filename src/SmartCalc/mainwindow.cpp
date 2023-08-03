@@ -20,8 +20,6 @@ MainWindow::MainWindow(QWidget* parent)
   connect(ui->pushButton_right, SIGNAL(clicked()), this,
           SLOT(num_and_funcs_click()));
 
-  // дописать x
-
   // вводимые кнопки
   QPushButton* buttons[] = {
       ui->pushButton_0,    ui->pushButton_1,    ui->pushButton_2,
@@ -73,5 +71,4 @@ void MainWindow::equal_click() {
 
   // Выводим результат на экран
   ui->lineEdit->setText(QString::number(result));
-  //        ui->lineEdit->setText((expression + "ok"));
 }
