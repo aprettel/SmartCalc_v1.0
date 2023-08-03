@@ -76,11 +76,11 @@ double perform_operation(double operand1, double operand2, char oper) {
     case 'T':
       result = atan(operand1);
       break;
-      //    case 'l':
-      //      result = ln(operand1);
-      //      break;
-    case 'L':
+    case 'l':
       result = log(operand2);
+      break;
+    case 'L':
+      result = log10(operand2);
       break;
     case 'Q':
       result = sqrt(operand2);
