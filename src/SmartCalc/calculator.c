@@ -10,33 +10,36 @@ double calculate_operand(const char* expression, size_t* index) {
 }
 
 double perform_operation(double operand1, double operand2, char oper) {
-  switch (oper) {
-    case '+':
-      return operand1 + operand2;
-    case '-':
-      return operand1 - operand2;
-    case '*':
-      return operand1 * operand2;
-    case '/':
-      return operand1 / operand2;
-    case '^':
-      return pow(operand1, operand2);
-    case '%':
-      return fmod(operand1, operand2);
-  }
-  return 0.0;
+    double result = 0.0;
+      switch (oper) {
+        case '+':
+          result = operand1 + operand2;
+        case '-':
+          result = operand1 - operand2;
+        case '*':
+          result = operand1 * operand2;
+        case '/':
+          result = operand1 / operand2;
+        case '^':
+          result = pow(operand1, operand2);
+        case '%':
+          result = fmod(operand1, operand2);
+      }
+  return result;
 }
 
 int get_priority(char oper) {
+    int result = 0;
   if (oper == '+' || oper == '-') {
-    return 1;
+    result = 1;
   } else if (oper == '*' || oper == '/' || oper == '%') {
-    return 2;
+    result = 2;
   } else if (oper == '^') {
-    return 3;
+    result = 3;
   } else {
-    return 0;
+    result = 0;
   }
+  return result;
 }
 
 int is_operator(char ch) {

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+
 #include "ui_mainwindow.h"
 //#include "calculator.h"
 #include "calculator.c"
@@ -42,18 +43,14 @@ MainWindow::MainWindow(QWidget* parent)
   creditWindow = new AnotherWindow();
   // подключаем к слоту запуска главного окна по кнопке во втором окне
   connect(creditWindow, &AnotherWindow::MainWindow, this, &MainWindow::show);
-
-
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::on_creditButton_clicked()
-{
-    creditWindow->show();  // Показываем второе окно
-    this->close();    // Закрываем основное окно
+void MainWindow::on_creditButton_clicked() {
+  creditWindow->show();  // Показываем второе окно
+  this->close();         // Закрываем основное окно
 }
-
 
 void MainWindow::num_and_funcs_click() {
   QPushButton* button = (QPushButton*)sender();
