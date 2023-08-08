@@ -21,7 +21,7 @@ int isDigit(char ch);
 int isOperand(char ch);
 int getPrecedence(char op);
 double processOperator(char op, double rightOperand, double leftOperand);
-char* convertToRPN(const char* expression);
+char* convertToRPN(const char* expression, char* output);
 double evaluateRPN(const char* rpn);
 
 #endif  // CALCULATOR_H
