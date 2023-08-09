@@ -6,22 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_SIZE 255
-
-// Стек для хранения операторов
-struct Stack {
-  int top;
-  double items[MAX_SIZE];
-};
-
-void push(struct Stack* stack, double item);
-double pop(struct Stack* stack);
-int isOperator(char ch);
-int isDigit(char ch);
-int isOperand(char ch);
-int getPrecedence(char op);
-double processOperator(char op, double rightOperand, double leftOperand);
-char* convertToRPN(const char* expression, char* output);
-double evaluateRPN(const char* rpn);
+int isOperator(char c);
+int isOperand(char c);
+int getPriority(char oper);
+double processOperator(double operand1, double operand2, char oper);
+double calculateExpression(const char* expression);
 
 #endif  // CALCULATOR_H

@@ -1,36 +1,89 @@
 #include "calculator.h"
 
-void push(struct Stack* stack, double item) {
-  stack->items[++stack->top] = item;
-}
-
-double pop(struct Stack* stack) { return stack->items[stack->top--]; }
-
-int isOperator(char ch) {
-  return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' ||
-         ch == '%';
-}
-
-int isDigit(char ch) { return (ch >= '0' && ch <= '9') || ch == '.'; }
-
-int isOperand(char ch) {
-  return isOperator(ch) || isDigit(ch) || ch == '(' || ch == ')';
-}
-
-int getPrecedence(char op) {
+// Функция для проверки, является ли символ оператором
+int isOperator(char c) {
   int result = 0;
-  switch (op) {
+  if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%' ||
+      c == 's' || c == 'c' || c == 't' || c == 'C' || c == 'S' || c == 'T' ||
+      c == 'l' || c == 'L' || c == 'Q') {
+    result = 1;
+  }
+  return result;
+}
+
+// Функция для проверки, является ли символ числом
+int isOperand(char c) {
+  int result = 0;
+  if ((c >= '0' && c <= '9') || c == '.') {
+    result = 1;
+  }
+  return result;
+}
+
+// Функция для определения приоритета оператора
+int getPriority(char oper) {
+  int result = 0;
+  if (oper == 's' || oper == 'c' || oper == 't' || oper == 'C' || oper == 'S' ||
+      oper == 'T' || oper == 'l' || oper == 'L' || oper == 'Q') {
+    result = 3;  // Высокий приоритет
+  } else if (oper == '*' || oper == '/' || oper == '%' || oper == '^') {
+    result = 2;  // Средний приоритет
+  } else if (oper == '+' || oper == '-') {
+    result = 1;  // Низкий приоритет
+  } else {
+    result = 0;  // Приоритет 0 для скобок
+  }
+  return result;
+}
+
+// Функция для выполнения операций над числами
+double processOperator(double operand1, double operand2, char oper) {
+  double result = 0;
+  switch (oper) {
     case '+':
+      result = operand1 + operand2;
+      break;
     case '-':
-      result = 1;
+      result = operand1 - operand2;
       break;
     case '*':
+      result = operand1 * operand2;
+      break;
     case '/':
-    case '%':
-      result = 2;
+      result = operand1 / operand2;
       break;
     case '^':
-      result = 3;
+      result = pow(operand1, operand2);
+      break;
+    case '%':
+      result = fmod(operand1, operand2);
+      break;
+    case 's':
+      result = sin(operand2);
+      break;
+    case 'c':
+      result = cos(operand2);
+      break;
+    case 't':
+      result = tan(operand2);
+      break;
+    case 'C':
+      result = acos(operand2);
+      break;
+    case 'S':
+      result = asin(operand2);
+      break;
+    case 'T':
+      result = atan(operand1);
+      break;
+    case 'l':
+      result = log(operand2);
+      break;
+    case 'L':
+      result = log10(operand2);
+      break;
+    case 'Q':
+      result = sqrt(operand2);
       break;
     default:
       result = 0;
@@ -39,116 +92,99 @@ int getPrecedence(char op) {
   return result;
 }
 
-double processOperator(char op, double rightOperand, double leftOperand) {
-  double result = 0.0;
-  switch (op) {
-    case '+':
-      result = leftOperand + rightOperand;
-      break;
-    case '-':
-      result = leftOperand - rightOperand;
-      break;
-    case '*':
-      result = leftOperand * rightOperand;
-      break;
-    case '/':
-      result = leftOperand / rightOperand;
-      break;
-    case '^':
-      result = pow(leftOperand, rightOperand);
-      break;
-    case '%':
-      result = fmod(leftOperand, rightOperand);
-      break;
-  }
+// Функция для вычисления значения выражения
+double calculateExpression(const char *expression) {
+  double operand_stack[255];  // Стек для чисел
+  char operator_stack[255];   // Стек для операторов
+  int operand_top = -1, operator_top = -1;
+  int unary = 0;  // Флаг для унарного оператора
+  int length_expression = strlen(expression);
 
-  return result;
-}
+  for (int i = 0; i < length_expression; i++) {
+    char current_char = expression[i];
 
-double evaluateRPN(const char* rpn) {
-  struct Stack stack;
-  stack.top = -1;
+    if (isOperand(current_char)) {
+      operand_stack[++operand_top] = atof(&expression[i]);
+      while (isOperand(expression[++i]))
+        ;
+      i--;  // Возвращаемся назад на символ, который не является числом
 
-  int len = strlen(rpn);
+      if (unary) {
+        operand_stack[operand_top] = unary == '-' ? -operand_stack[operand_top]
+                                                  : operand_stack[operand_top];
+        unary = 0;  // Сбрасываем флаг унарного оператора
+      }
+    } else if (isOperator(current_char)) {
+      if ((current_char == '-' || current_char == '+') &&
+          (i == 0 || expression[i - 1] == '(' ||
+           isOperator(expression[i - 1]))) {
+        unary = current_char;
+        continue;
+      }
 
-  char* endPtr;
+      if (operator_top == -1) {
+        operator_stack[++operator_top] = current_char;
+      } else if (getPriority(current_char) >
+                 getPriority(operator_stack[operator_top])) {
+        operator_stack[++operator_top] = current_char;
+      } else {
+        while (operator_top != -1 &&
+               getPriority(current_char) <=
+                   getPriority(operator_stack[operator_top])) {
+          double operand2 = operand_stack[operand_top--];
+          double operand1 = operand_stack[operand_top--];
+          char oper = operator_stack[operator_top--];
 
-  for (int i = 0; i < len; i++) {
-    char ch = rpn[i];
+          double result = processOperator(operand1, operand2, oper);
 
-    if (isDigit(ch)) {
-      double operand = strtod(&rpn[i], &endPtr);
-      push(&stack, operand);
-      i += endPtr - &rpn[i] - 1;
-    } else if (isOperator(ch)) {
-      double rightOperand = pop(&stack);
-      double leftOperand = pop(&stack);
-      double result = processOperator(ch, rightOperand, leftOperand);
-      push(&stack, result);
+          operand_stack[++operand_top] = result;
+        }
+
+        operator_stack[++operator_top] = current_char;
+      }
+    } else if (current_char == '(') {
+      operator_stack[++operator_top] = current_char;
+    } else if (current_char == ')') {
+      while (operator_stack[operator_top] != '(') {
+        double operand2 = operand_stack[operand_top--];
+        double operand1 = operand_stack[operand_top--];
+        char oper = operator_stack[operator_top--];
+
+        double result = processOperator(operand1, operand2, oper);
+
+        operand_stack[++operand_top] = result;
+      }
+      operator_top--;
     }
   }
 
-  return stack.items[stack.top];
-}
+  while (operator_top != -1) {
+    double operand2 = operand_stack[operand_top--];
+    double operand1 = operand_stack[operand_top--];
+    char oper = operator_stack[operator_top--];
 
-char* convertToRPN(const char* expression, char* output) {
-  struct Stack operatorStack;
-  operatorStack.top = -1;
+    double result = processOperator(operand1, operand2, oper);
 
-  int len = strlen(expression);
-  int j = 0;
-
-  for (int i = 0; i < len; i++) {
-    char ch = expression[i];
-
-    if (isDigit(ch)) {
-      while (i < len && (isDigit(expression[i]) || expression[i] == '.')) {
-        output[j++] = expression[i++];
-      }
-      output[j++] = ' ';
-      i--;
-    } else if (isOperator(ch)) {
-      while (operatorStack.top != -1 &&
-             isOperator(operatorStack.items[operatorStack.top]) &&
-             getPrecedence(ch) <=
-                 getPrecedence(operatorStack.items[operatorStack.top])) {
-        output[j++] = pop(&operatorStack);
-        output[j++] = ' ';
-      }
-      push(&operatorStack, ch);
-    } else if (ch == '(') {
-      push(&operatorStack, '(');
-    } else if (ch == ')') {
-      while (operatorStack.top != -1 &&
-             operatorStack.items[operatorStack.top] != '(') {
-        output[j++] = pop(&operatorStack);
-        output[j++] = ' ';
-      }
-      pop(&operatorStack);  // Игнорируем '('
-    }
+    operand_stack[++operand_top] = result;
   }
 
-  while (operatorStack.top != -1) {
-    output[j++] = pop(&operatorStack);
-    output[j++] = ' ';
-  }
-
-  output[j] = '\0';
-
-  return output;
+  return operand_stack[operand_top];
 }
 
-// int main() {
-//     char expression[100];
-//     printf("Введите выражение в инфиксной нотации: ");
-//     fgets(expression, sizeof(expression), stdin);
-//     char rpn[255];
-//     convertToRPN(expression, rpn);
-//     double result = evaluateRPN(rpn);
+int main() {
+  char expression[256];
 
-//    printf("Результат: %.2f\n", result);
+  printf("Выражение: ");
+  fgets(expression, sizeof(expression), stdin);
 
-//    // free(rpn);
+  // Удаляем символ новой строки из ввода
+  if (expression[strlen(expression) - 1] == '\n') {
+    expression[strlen(expression) - 1] = '\0';
+  }
 
-//    return 0;
-//}
+  float result = calculateExpression(expression);
+
+  printf("Result: %.7f\n", result);
+
+  return 0;
+}

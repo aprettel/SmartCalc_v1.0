@@ -76,13 +76,10 @@ void MainWindow::equal_click() {
   // Получаем введенное пользователем выражение
   QString expression = ui->lineEdit->text();
 
-  // Переводим выражение в инфиксной нотации в обратную польскую нотацию
-  char rpnExpression[255];
-  convertToRPN(expression.toStdString().c_str(), rpnExpression);
-
-  // Вычисляем результат выражения в обратной польской нотации
-  double result = evaluateRPN(rpnExpression);
+  // Передаем выражение в функцию для вычисления
+  double result = calculate_expression(expression.toStdString().c_str());
 
   // Выводим результат на экран
   ui->lineEdit->setText(QString::number(result));
+  //        ui->lineEdit->setText((expression + "ok"));
 }
