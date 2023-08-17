@@ -20,6 +20,9 @@ MainWindow::MainWindow(QWidget* parent)
   connect(ui->pushButton_right, SIGNAL(clicked()), this,
           SLOT(num_and_funcs_click()));
 
+  // X
+  connect(ui->pushButton_X, SIGNAL(clicked()), this, SLOT(change_X()));
+
   // вводимые кнопки
   QPushButton* buttons[] = {
       ui->pushButton_0,    ui->pushButton_1,    ui->pushButton_2,
@@ -53,31 +56,65 @@ void MainWindow::on_creditButton_clicked() {
 }
 
 void MainWindow::num_and_funcs_click() {
-  QPushButton* button = (QPushButton*)sender();
-  ui->lineEdit->setText(ui->lineEdit->text() + button->text());
-}
-
-void MainWindow::C_click() {
-  QString str = ui->lineEdit->text();
-  QByteArray ba = str.toLocal8Bit();
-  char* prev_char = ba.data();
-  char next_char[256] = {0};
-  if (!str.isNull()) {
-    for (int i = 0; i < str.length() - 1; i++) {
-      next_char[i] = prev_char[i];
-    }
-    ui->lineEdit->setText(next_char);
+  QPushButton* button = qobject_cast<QPushButton*>(sender());
+  QLineEdit* currentLineEdit = qobject_cast<QLineEdit*>(focusWidget());
+  if (currentLineEdit == ui->lineEdit_2) {
+    currentLineEdit->setText(currentLineEdit->text() + button->text());
+  } else {
+    ui->lineEdit->setText(ui->lineEdit->text() + button->text());
   }
 }
 
-void MainWindow::AC_click() { ui->lineEdit->setText(""); }
+void MainWindow::change_X() {
+  ui->lineEdit_2->setFocus();
+  QString inputValue = ui->lineEdit_2->text();
+  double X = inputValue.toDouble();
+
+  // Подставить значение X в выражение
+  QString expression = ui->lineEdit->text();
+  if (expression.contains("x")) {  // проверка наличия символа "x"
+    expression.replace("x", QString::number(X));
+    // Обновить значение выражения в lineEdit
+    ui->lineEdit->setText(expression);
+    ui->lineEdit_2->setText("");
+  } else {
+      QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
+  }
+}
+
+void MainWindow::C_click() {
+  if (ui->lineEdit_2->hasFocus()) {
+    QString str = ui->lineEdit_2->text();
+    if (!str.isEmpty()) {
+      str.chop(1); 
+      ui->lineEdit_2->setText(str);
+    }
+  } else {
+    QString str = ui->lineEdit->text();
+    if (!str.isEmpty()) {
+      str.chop(1); 
+      ui->lineEdit->setText(str);
+    }
+  }
+}
+
+
+void MainWindow::AC_click() { 
+  if (ui->lineEdit_2->hasFocus()) {
+  ui->lineEdit_2->setText(""); 
+  } else {
+      ui->lineEdit->setText(""); 
+  }
+}
 
 void MainWindow::equal_click() {
   // Получаем введенное пользователем выражение
   QString expression = ui->lineEdit->text();
 
+  char rpn[MAX_EXPRESSION_LENGTH];
+  infixToRPN(expression.toStdString().c_str(), rpn);
   // Передаем выражение в функцию для вычисления
-  double result = calculate_expression(expression.toStdString().c_str());
+  double result = calculateRPN(rpn);
 
   // Выводим результат на экран
   ui->lineEdit->setText(QString::number(result));

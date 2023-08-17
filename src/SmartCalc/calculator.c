@@ -1,190 +1,293 @@
 #include "calculator.h"
 
-// Функция для проверки, является ли символ оператором
+void initStack(Stack* stack) { stack->top = -1; }
+
+int isEmpty(Stack* stack) { return stack->top == -1; }
+
+int isFull(Stack* stack) { return stack->top == MAX_EXPRESSION_LENGTH - 1; }
+
+void push(Stack* stack, double value) {
+  if (isFull(stack)) {
+    printf("Стэк полон\n");
+    exit(1);
+  }
+  stack->data[++stack->top] = value;
+}
+
+double pop(Stack* stack) {
+  // if (isEmpty(stack)) {
+  //     printf("Стэк пуст\n");
+  //     exit(1);
+  // }
+  return stack->data[stack->top--];
+}
+
 int isOperator(char c) {
-  int result = 0;
-  if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%' ||
-      c == 's' || c == 'c' || c == 't' || c == 'C' || c == 'S' || c == 'T' ||
-      c == 'l' || c == 'L' || c == 'Q') {
-    result = 1;
-  }
-  return result;
+  return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
 }
 
-// Функция для проверки, является ли символ числом
-int isOperand(char c) {
-  int result = 0;
-  if ((c >= '0' && c <= '9') || c == '.') {
-    result = 1;
-  }
-  return result;
+int isLetter(char c) {
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-// Функция для определения приоритета оператора
-int getPriority(char oper) {
+int getPrecedence(char c) {
   int result = 0;
-  if (oper == 's' || oper == 'c' || oper == 't' || oper == 'C' || oper == 'S' ||
-      oper == 'T' || oper == 'l' || oper == 'L' || oper == 'Q') {
-    result = 3;  // Высокий приоритет
-  } else if (oper == '*' || oper == '/' || oper == '%' || oper == '^') {
-    result = 2;  // Средний приоритет
-  } else if (oper == '+' || oper == '-') {
-    result = 1;  // Низкий приоритет
-  } else {
-    result = 0;  // Приоритет 0 для скобок
-  }
-  return result;
-}
-
-// Функция для выполнения операций над числами
-double processOperator(double operand1, double operand2, char oper) {
-  double result = 0;
-  switch (oper) {
+  switch (c) {
     case '+':
-      result = operand1 + operand2;
-      break;
     case '-':
-      result = operand1 - operand2;
-      break;
+      result = 1;
     case '*':
-      result = operand1 * operand2;
-      break;
     case '/':
-      result = operand1 / operand2;
-      break;
-    case '^':
-      result = pow(operand1, operand2);
-      break;
     case '%':
-      result = fmod(operand1, operand2);
-      break;
+      result = 2;
+    case '^':
+      result = 3;
     case 's':
-      result = sin(operand2);
-      break;
     case 'c':
-      result = cos(operand2);
-      break;
     case 't':
-      result = tan(operand2);
-      break;
-    case 'C':
-      result = acos(operand2);
-      break;
     case 'S':
-      result = asin(operand2);
-      break;
+    case 'C':
     case 'T':
-      result = atan(operand1);
-      break;
     case 'l':
-      result = log(operand2);
-      break;
     case 'L':
-      result = log10(operand2);
-      break;
     case 'Q':
-      result = sqrt(operand2);
-      break;
+      result = 4;
     default:
       result = 0;
-      break;
   }
   return result;
 }
 
-// Функция для вычисления значения выражения
-double calculateExpression(const char *expression) {
-  double operand_stack[255];  // Стек для чисел
-  char operator_stack[255];   // Стек для операторов
-  int operand_top = -1, operator_top = -1;
-  int unary = 0;  // Флаг для унарного оператора
-  int length_expression = strlen(expression);
+void infixToRPN(const char* infix, char* rpn) {
+  Stack stack;
+  initStack(&stack);
 
-  for (int i = 0; i < length_expression; i++) {
-    char current_char = expression[i];
+  int infixLength = strlen(infix);
+  int rpnIndex = 0;
+  char lastChar = '\0';
 
-    if (isOperand(current_char)) {
-      operand_stack[++operand_top] = atof(&expression[i]);
-      while (isOperand(expression[++i]))
-        ;
-      i--;  // Возвращаемся назад на символ, который не является числом
-
-      if (unary) {
-        operand_stack[operand_top] = unary == '-' ? -operand_stack[operand_top]
-                                                  : operand_stack[operand_top];
-        unary = 0;  // Сбрасываем флаг унарного оператора
+  for (int i = 0; i < infixLength; i++) {
+    if (isdigit(infix[i])) {
+      while (isdigit(infix[i]) || infix[i] == '.') {
+        rpn[rpnIndex++] = infix[i++];
       }
-    } else if (isOperator(current_char)) {
-      if ((current_char == '-' || current_char == '+') &&
-          (i == 0 || expression[i - 1] == '(' ||
-           isOperator(expression[i - 1]))) {
-        unary = current_char;
-        continue;
+      rpn[rpnIndex++] = ' ';
+      i--;
+      lastChar = infix[i];
+    } else if (infix[i] == '(') {
+      push(&stack, infix[i]);
+      lastChar = infix[i];
+    } else if (infix[i] == ')') {
+      while (!isEmpty(&stack) && stack.data[stack.top] != '(') {
+        rpn[rpnIndex++] = pop(&stack);
+        rpn[rpnIndex++] = ' ';
       }
-
-      if (operator_top == -1) {
-        operator_stack[++operator_top] = current_char;
-      } else if (getPriority(current_char) >
-                 getPriority(operator_stack[operator_top])) {
-        operator_stack[++operator_top] = current_char;
+      if (!isEmpty(&stack) && stack.data[stack.top] == '(') {
+        pop(&stack);
+      }
+      lastChar = infix[i];
+    } else if (isOperator(infix[i])) {
+      if (isOperator(lastChar)) {
+        printf("Ошибка: Неверный формат выражения\n");
+        exit(EXIT_FAILURE);
+      }
+      while (!isEmpty(&stack) &&
+             getPrecedence(infix[i]) <= getPrecedence(stack.data[stack.top]) &&
+             stack.data[stack.top] != '(') {
+        rpn[rpnIndex++] = pop(&stack);
+        rpn[rpnIndex++] = ' ';
+      }
+      push(&stack, infix[i]);
+      lastChar = infix[i];
+    } else if (isLetter(infix[i])) {
+      if ((i + 3 < infixLength) &&
+          (infix[i] == 's' && infix[i + 1] == 'i' && infix[i + 2] == 'n' &&
+           !isLetter(infix[i + 3]))) {
+        push(&stack, 's');
+        i += 2;
+      } else if ((i + 2 < infixLength) &&
+                 (infix[i] == 'c' && infix[i + 1] == 'o' &&
+                  infix[i + 2] == 's' && !isLetter(infix[i + 3]))) {
+        push(&stack, 'c');
+        i += 2;
+      } else if ((i + 2 < infixLength) &&
+                 (infix[i] == 't' && infix[i + 1] == 'a' &&
+                  infix[i + 2] == 'n' && !isLetter(infix[i + 3]))) {
+        push(&stack, 't');
+        i += 2;
+      } else if ((i + 3 < infixLength) &&
+                 (infix[i] == 'a' && infix[i + 1] == 's' &&
+                  infix[i + 2] == 'i' && infix[i + 3] == 'n' &&
+                  !isLetter(infix[i + 4]))) {
+        push(&stack, 'S');
+        i += 3;
+      } else if ((i + 3 < infixLength) &&
+                 (infix[i] == 'a' && infix[i + 1] == 'c' &&
+                  infix[i + 2] == 'o' && infix[i + 3] == 's' &&
+                  !isLetter(infix[i + 4]))) {
+        push(&stack, 'C');
+        i += 3;
+      } else if ((i + 3 < infixLength) &&
+                 (infix[i] == 'a' && infix[i + 1] == 't' &&
+                  infix[i + 2] == 'a' && infix[i + 3] == 'n' &&
+                  !isLetter(infix[i + 4]))) {
+        push(&stack, 'T');
+        i += 3;
+      } else if ((i + 1 < infixLength) &&
+                 (infix[i] == 'l' && infix[i + 1] == 'n' &&
+                  !isLetter(infix[i + 2]))) {
+        push(&stack, 'l');
+        i += 1;
+      } else if ((i + 2 < infixLength) &&
+                 (infix[i] == 'l' && infix[i + 1] == 'o' &&
+                  infix[i + 2] == 'g' && !isLetter(infix[i + 3]))) {
+        push(&stack, 'L');
+        i += 2;
+      } else if ((i + 3 < infixLength) &&
+                 (infix[i] == 's' && infix[i + 1] == 'q' &&
+                  infix[i + 2] == 'r' && infix[i + 3] == 't' &&
+                  !isLetter(infix[i + 4]))) {
+        push(&stack, 'Q');
+        i += 3;
       } else {
-        while (operator_top != -1 &&
-               getPriority(current_char) <=
-                   getPriority(operator_stack[operator_top])) {
-          double operand2 = operand_stack[operand_top--];
-          double operand1 = operand_stack[operand_top--];
-          char oper = operator_stack[operator_top--];
-
-          double result = processOperator(operand1, operand2, oper);
-
-          operand_stack[++operand_top] = result;
+        while (!isEmpty(&stack) && getPrecedence(infix[i]) <=
+                                       getPrecedence(stack.data[stack.top])) {
+          rpn[rpnIndex++] = pop(&stack);
+          rpn[rpnIndex++] = ' ';
         }
-
-        operator_stack[++operator_top] = current_char;
+        push(&stack, infix[i]);
       }
-    } else if (current_char == '(') {
-      operator_stack[++operator_top] = current_char;
-    } else if (current_char == ')') {
-      while (operator_stack[operator_top] != '(') {
-        double operand2 = operand_stack[operand_top--];
-        double operand1 = operand_stack[operand_top--];
-        char oper = operator_stack[operator_top--];
-
-        double result = processOperator(operand1, operand2, oper);
-
-        operand_stack[++operand_top] = result;
-      }
-      operator_top--;
     }
   }
 
-  while (operator_top != -1) {
-    double operand2 = operand_stack[operand_top--];
-    double operand1 = operand_stack[operand_top--];
-    char oper = operator_stack[operator_top--];
-
-    double result = processOperator(operand1, operand2, oper);
-
-    operand_stack[++operand_top] = result;
+  while (!isEmpty(&stack)) {
+    rpn[rpnIndex++] = pop(&stack);
+    rpn[rpnIndex++] = ' ';
   }
-
-  return operand_stack[operand_top];
+  rpn[rpnIndex] = '\0';
 }
 
-int main() {
-  char expression[256];
+double calculateRPN(char* rpn) {
+  Stack stack;
+  initStack(&stack);
 
-  printf("Выражение: ");
-  fgets(expression, sizeof(expression), stdin);
+  char* token = strtok(rpn, " ");
 
-  // Удаляем символ новой строки из ввода
-  if (expression[strlen(expression) - 1] == '\n') {
-    expression[strlen(expression) - 1] = '\0';
+  while (token) {
+    if (isdigit(token[0])) {
+      double value = atof(token);
+      push(&stack, value);
+    } else if (isOperator(token[0])) {
+      double operand2 = pop(&stack);
+      double operand1 = pop(&stack);
+      double result = 0.0;
+
+      switch (token[0]) {
+        case '+':
+          result = operand1 + operand2;
+          break;
+        case '-':
+          result = operand1 - operand2;
+          break;
+        case '*':
+          result = operand1 * operand2;
+          break;
+        case '/':
+          if (operand2 == 0) {
+            printf("Ошибка: Деление на ноль\n");
+            exit(EXIT_FAILURE);
+          }
+          result = operand1 / operand2;
+          break;
+        case '^':
+          result = pow(operand1, operand2);
+          break;
+        case '%':
+          result = fmod(operand1, operand2);
+          break;
+      }
+
+      push(&stack, result);
+    } else if (isLetter(token[0])) {
+      double operand = pop(&stack);
+      double result = 0.0;
+
+      switch (token[0]) {
+        case 's':
+          result = sin(operand);
+          break;
+        case 'c':
+          result = cos(operand);
+          break;
+        case 't':
+          result = tan(operand);
+          break;
+        case 'S':
+          if (operand < -1 || operand > 1) {
+            printf("Ошибка: Неправильное значение аргумента\n");
+            exit(EXIT_FAILURE);
+          }
+          result = asin(operand);
+          break;
+        case 'C':
+          if (operand < -1 || operand > 1) {
+            printf("Ошибка: Неправильное значение аргумента\n");
+            exit(EXIT_FAILURE);
+          }
+          result = acos(operand);
+          break;
+        case 'T':
+          result = atan(operand);
+          break;
+        case 'l':
+          if (operand > 0) {
+            printf("Ошибка: Неправильное значение аргумента\n");
+            exit(EXIT_FAILURE);
+          }
+          result = log(operand);
+          break;
+        case 'L':
+          if (operand > 0) {
+            printf("Ошибка: Неправильное значение аргумента\n");
+            exit(EXIT_FAILURE);
+          }
+          result = log10(operand);
+          break;
+        case 'Q':
+          if (operand < 0) {
+            printf("Ошибка: Неправильное значение аргумента\n");
+            exit(EXIT_FAILURE);
+          }
+          result = sqrt(operand);
+          break;
+      }
+      push(&stack, result);
+    }
+
+    token = strtok(NULL, " ");
   }
-
-  float result = calculateExpression(expression);
-
-  printf("Result: %.7f\n", result);
-
-  return 0;
+  return pop(&stack);
 }
+
+// int main() {
+//   // char infix[MAX_EXPRESSION_LENGTH] = "2*sin(5)-5";
+//   // char infix[MAX_EXPRESSION_LENGTH] = "cos(5)";
+//   // char infix[MAX_EXPRESSION_LENGTH] = "3*(-4)";
+//   // char infix[MAX_EXPRESSION_LENGTH] = "3*(4)";
+//   char infix[MAX_EXPRESSION_LENGTH];
+//   char rpn[MAX_EXPRESSION_LENGTH];
+
+//   printf("введи выражение: ");
+//   fgets(infix, MAX_EXPRESSION_LENGTH, stdin);
+//   infix[strlen(infix) - 1] = '\0';  // удаляем символ перевода строки
+
+//   infixToRPN(infix, rpn);
+
+//   printf("перевод в RPN: %s\n", rpn);
+
+//   double result = calculateRPN(rpn);
+
+//   printf("результат: %lf\n", result);
+
+//   return 0;
+// }

@@ -4,6 +4,8 @@
 #include <creditwindow.h>
 
 #include <QMainWindow>
+#include <QString>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,6 +28,7 @@ class MainWindow : public QMainWindow {
   void C_click();
   void AC_click();
   void equal_click();
+  void change_X();
 
  private:
   Ui::MainWindow *ui;
