@@ -1,27 +1,29 @@
-#ifndef CALCULATOR_H
-#define CALCULATOR_H
 #include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_EXPRESSION_LENGTH 255
+#define MAX_SIZE 255
 
+// Структура стека
 typedef struct {
-  double data[MAX_EXPRESSION_LENGTH];
+  double data[MAX_SIZE];
   int top;
 } Stack;
 
-void initStack(Stack* stack);
+void init(Stack* stack);
 int isEmpty(Stack* stack);
-int isFull(Stack* stack);
 void push(Stack* stack, double value);
 double pop(Stack* stack);
-int isOperator(char c);
-int isLetter(char c);
-int getPrecedence(char c);
-void infixToRPN(const char* infix, char* rpn);
-double calculateRPN(char* rpn);
-
-#endif  // CALCULATOR_H
+double peek(Stack* stack);
+int isOperator(char character);
+int isLetter(char character);
+int isOpeningBracket(char character);
+int isClosingBracket(char character);
+int isUnaryMinus(char symbol);
+int isUnaryPlus(char symbol);
+int getPriority(char oper);
+char func(char* function, char* func_char);
+double calculate(double operand1, double operand2, char oper);
+double evaluateExpression(char* expression);
