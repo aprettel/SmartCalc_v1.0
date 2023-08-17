@@ -2,6 +2,7 @@
 #define ANOTHERWINDOW_H
 
 #include <QWidget>
+#include <QMessageBox>
 
 namespace Ui {
 class AnotherWindow;
@@ -20,6 +21,7 @@ class AnotherWindow : public QWidget {
  private slots:
   // Слот-обработчик нажатия кнопки
   void on_mainButton_clicked();
+  void equal_click();
 
  private:
   Ui::AnotherWindow *ui;

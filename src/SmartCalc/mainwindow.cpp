@@ -78,7 +78,7 @@ void MainWindow::change_X() {
     ui->lineEdit->setText(expression);
     ui->lineEdit_2->setText("");
   } else {
-    QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
+      QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
   }
 }
 
@@ -86,23 +86,24 @@ void MainWindow::C_click() {
   if (ui->lineEdit_2->hasFocus()) {
     QString str = ui->lineEdit_2->text();
     if (!str.isEmpty()) {
-      str.chop(1);
+      str.chop(1); 
       ui->lineEdit_2->setText(str);
     }
   } else {
     QString str = ui->lineEdit->text();
     if (!str.isEmpty()) {
-      str.chop(1);
+      str.chop(1); 
       ui->lineEdit->setText(str);
     }
   }
 }
 
-void MainWindow::AC_click() {
+
+void MainWindow::AC_click() { 
   if (ui->lineEdit_2->hasFocus()) {
-    ui->lineEdit_2->setText("");
+      ui->lineEdit_2->setText("");
   } else {
-    ui->lineEdit->setText("");
+      ui->lineEdit->setText(""); 
   }
 }
 
@@ -117,5 +118,4 @@ void MainWindow::equal_click() {
 
   // Выводим результат на экран
   ui->lineEdit->setText(QString::number(result));
-  //        ui->lineEdit->setText((expression + "ok"));
 }

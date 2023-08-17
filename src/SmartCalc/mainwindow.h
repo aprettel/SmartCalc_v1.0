@@ -4,8 +4,8 @@
 #include <creditwindow.h>
 
 #include <QMainWindow>
-#include <QMessageBox>
 #include <QString>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

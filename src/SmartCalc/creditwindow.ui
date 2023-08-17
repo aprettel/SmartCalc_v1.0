@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>320</height>
+    <width>650</width>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,102 +26,12 @@
     <string>Простой калькулятор</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="variantsBox">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>40</y>
-     <width>320</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <item>
-    <property name="text">
-     <string>Ежемесячный платеж</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Переплата по кредиту</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Общая выплата</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>48</y>
-     <width>120</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Вариант расчета</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>90</y>
-     <width>120</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Сумма кредита</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>85</y>
-     <width>160</width>
-     <height>30</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>125</y>
-     <width>160</width>
-     <height>30</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>130</y>
-     <width>120</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Срок кредита</string>
-   </property>
-  </widget>
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>120</y>
-     <width>70</width>
+     <x>390</x>
+     <y>80</y>
+     <width>100</width>
      <height>40</height>
     </rect>
    </property>
@@ -136,11 +46,21 @@
     </property>
    </item>
   </widget>
+  <widget class="QLineEdit" name="lineEdit_1">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>45</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>170</y>
+     <x>90</x>
+     <y>130</y>
      <width>120</width>
      <height>20</height>
     </rect>
@@ -152,18 +72,80 @@
   <widget class="QLineEdit" name="lineEdit_3">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>165</y>
+     <x>230</x>
+     <y>125</y>
      <width>160</width>
      <height>30</height>
     </rect>
    </property>
   </widget>
+  <widget class="QLineEdit" name="lineEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>85</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>50</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Сумма кредита</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>90</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Срок кредита</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_D">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>200</y>
+     <width>170</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Дифференцированные</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_A">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>170</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Аннуитетные</string>
+   </property>
+  </widget>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>170</y>
+     <x>400</x>
+     <y>130</y>
      <width>20</width>
      <height>20</height>
     </rect>
@@ -175,8 +157,8 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>210</y>
+     <x>90</x>
+     <y>170</y>
      <width>120</width>
      <height>40</height>
     </rect>
@@ -189,30 +171,95 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QRadioButton" name="radioButton">
+  <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>210</y>
-     <width>120</width>
-     <height>20</height>
+     <x>50</x>
+     <y>250</y>
+     <width>160</width>
+     <height>40</height>
     </rect>
    </property>
    <property name="text">
-    <string>Аннуитетные</string>
+    <string>Ежемесячный платеж:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QRadioButton" name="radioButton_2">
+  <widget class="QLineEdit" name="lineEdit_monthly">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>240</y>
-     <width>170</width>
-     <height>20</height>
+     <x>230</x>
+     <y>255</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_equal">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>260</y>
+     <width>100</width>
+     <height>32</height>
     </rect>
    </property>
    <property name="text">
-    <string>Дифференцированные</string>
+    <string>Рассчитать</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>295</y>
+     <width>160</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Начисленные процент:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_overpay">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>300</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>345</y>
+     <width>160</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Долг + проценты:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_total">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>350</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
    </property>
   </widget>
  </widget>

@@ -10,18 +10,20 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 SOURCES += \
     creditwindow.cpp \
-    calculator.c \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    calculator.c \
+    credit_calc.c
 
 HEADERS += \
     creditwindow.h \
+    mainwindow.h \
     calculator.h \
-    mainwindow.h
+    credit_calc.h
 
 FORMS += \
-    creditwindow.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    creditwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

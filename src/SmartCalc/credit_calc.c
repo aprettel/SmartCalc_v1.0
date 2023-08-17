@@ -1,7 +1,4 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "credit_calc.h"
 
 // Аннуитетный ежемесячный платеж
 double A_MonthlyPayment(double credit_sum, int period, double percent) {
@@ -59,64 +56,67 @@ double D_Overpayment(double credit_sum, int period, double percent) {
 }
 
 // Выбор типа ежемесячных платежей
-void payment_type(char* type_pay, double credit_sum, int period,
-                  double percent) {
-  //   int result = 0;
+// double payment_type(char* type_pay, double credit_sum, int period,
+//                   double percent) {
+//     double result = 0;
 
-  if (strcmp(type_pay, "аннуитетный") == 0) {
-    // result = 1;
-    double monthly = A_MonthlyPayment(credit_sum, period, percent);
-    printf("Ежемесячный платеж: %.2lf\n", monthly);
+//   if (strcmp(type_pay, "аннуитетный") == 0) {
+//     // result = 1;
+//     double monthly = A_MonthlyPayment(credit_sum, period, percent);
+//     printf("Ежемесячный платеж: %.2lf\n", monthly);
 
-    double overpay = A_Overpayment(credit_sum, period, monthly);
-    printf("Начисленные проценты: %.2lf\n", overpay);
+//     double overpay = A_Overpayment(credit_sum, period, monthly);
+//     printf("Начисленные проценты: %.2lf\n", overpay);
 
-    double total = TotalPayout(credit_sum, overpay);
-    printf("Долг + проценты: %.2lf\n", total);
+//     double total = TotalPayout(credit_sum, overpay);
+//     printf("Долг + проценты: %.2lf\n", total);
 
-  } else if (strcmp(type_pay, "дифференцированный") == 0) {
-    // result = 2;
-    double monthly = D_MonthlyPayment(credit_sum, period, percent);
-    printf("Ежемесячный платеж: %.2lf\n", monthly);
+//   } else if (strcmp(type_pay, "дифференцированный") == 0) {
+//     // result = 2;
+//     double monthly = D_MonthlyPayment(credit_sum, period, percent);
+//     printf("Ежемесячный платеж: %.2lf\n", monthly);
 
-    double overpay = D_Overpayment(credit_sum, period, percent);
-    printf("Начисленные проценты: %.2lf\n", overpay);
+//     double overpay = D_Overpayment(credit_sum, period, percent);
+//     printf("Начисленные проценты: %.2lf\n", overpay);
 
-    double total = TotalPayout(credit_sum, overpay);
-    printf("Долг + проценты: %.2lf\n", total);
-  } else {
-    printf("Некорректный тип платежа\n");
-    exit(EXIT_FAILURE);
-  }
-  //   return result;
-}
+//     double total = TotalPayout(credit_sum, overpay);
+//     printf("Долг + проценты: %.2lf\n", total);
+//   } else {
+//     printf("Некорректный тип платежа\n");
+//     exit(EXIT_FAILURE);
+//   }
+//     return result;
+// }
 
-int main() {
-  double credit_sum = 0.0;
-  scanf("%lf", &credit_sum);
+// int main() {
+//  double credit_sum = 0.0;
+//  scanf("%lf", &credit_sum);
 
-  int period = 0;
-  scanf("%d", &period);
+//  int period = 0;
+//  scanf("%d", &period);
 
-  double percent = 0.0;
-  scanf("%lf", &percent);
+//  double percent = 0.0;
+//  scanf("%lf", &percent);
 
-  // char* annuity = "аннуитетный";
-  // char* different "дифференцированный";
+ // char* annuity = "аннуитетный";
+ // char* different "дифференцированный";
 
-  char type_pay[25];
-  scanf("%s", type_pay);
-  payment_type(type_pay, credit_sum, period, percent);
-  //   printf("%d\n", payment_type(type_pay, credit_sum, period, percent));
+//  char type_pay[25];
+//  scanf("%s", type_pay);
+//  payment_type(type_pay, credit_sum, period, percent);
+ //   printf("%d\n", payment_type(type_pay, credit_sum, period, percent));
 
-  //   double monthly = A_MonthlyPayment(credit_sum, period, percent);
-  //   printf("%.2lf\n", monthly);
+  //  double monthlyA = A_MonthlyPayment(credit_sum, period, percent);
+  //  printf("%.2lf\n", monthlyA);
 
-  //   double overpay = D_Overpayment(credit_sum, period, percent);
-  //   printf("%.2lf\n", overpay);
+  // double monthlyD = D_MonthlyPayment(credit_sum, period, percent);
+  // printf("%.2lf\n", monthlyD);
 
-  //   double total = TotalPayout(credit_sum, overpay);
-  //   printf("%.2lf\n", total);
+ //   double overpay = D_Overpayment(credit_sum, period, percent);
+ //   printf("%.2lf\n", overpay);
 
-  return 0;
-}
+ //   double total = TotalPayout(credit_sum, overpay);
+ //   printf("%.2lf\n", total);
+
+//  return 0;
+// }
