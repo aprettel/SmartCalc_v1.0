@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 
 #include "ui_mainwindow.h"
-//#include "calculator.h"
 #include "calculator.c"
 
 extern "C" {
@@ -42,7 +41,7 @@ MainWindow::MainWindow(QWidget* parent)
   // подсчитываем
   connect(ui->pushButton_equal, SIGNAL(clicked()), this, SLOT(equal_click()));
 
-  // Инициализируем второе окно
+  // инициализируем второе окно
   creditWindow = new AnotherWindow();
   // подключаем к слоту запуска главного окна по кнопке во втором окне
   connect(creditWindow, &AnotherWindow::MainWindow, this, &MainWindow::show);
@@ -51,8 +50,8 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::on_creditButton_clicked() {
-  creditWindow->show();  // Показываем второе окно
-  this->close();         // Закрываем основное окно
+  creditWindow->show();  // показываем второе окно
+  this->close();         // закрываем основное окно
 }
 
 void MainWindow::num_and_funcs_click() {
@@ -70,11 +69,11 @@ void MainWindow::change_X() {
   QString inputValue = ui->lineEdit_2->text();
   double X = inputValue.toDouble();
 
-  // Подставить значение X в выражение
+  // подставить значение X в выражение
   QString expression = ui->lineEdit->text();
   if (expression.contains("x")) {  // проверка наличия символа "x"
     expression.replace("x", QString::number(X));
-    // Обновить значение выражения в lineEdit
+    // обновить значение выражения в lineEdit
     ui->lineEdit->setText(expression);
     ui->lineEdit_2->setText("");
   } else {
@@ -108,14 +107,14 @@ void MainWindow::AC_click() {
 }
 
 void MainWindow::equal_click() {
-  // Получаем введенное пользователем выражение
+  // получаем введенное пользователем выражение
   QString expression = ui->lineEdit->text();
 
   char rpn[MAX_EXPRESSION_LENGTH];
   infixToRPN(expression.toStdString().c_str(), rpn);
-  // Передаем выражение в функцию для вычисления
+  // передаем выражение в функцию для вычисления
   double result = calculateRPN(rpn);
 
-  // Выводим результат на экран
-  ui->lineEdit->setText(QString::number(result));
+  // выводим результат на экран
+  ui->lineEdit->setText(QString::number(result, 'f', 6));
 }

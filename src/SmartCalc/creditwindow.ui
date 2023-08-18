@@ -187,16 +187,6 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_monthly">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>255</y>
-     <width>160</width>
-     <height>30</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton_equal">
    <property name="geometry">
     <rect>
@@ -226,16 +216,6 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_overpay">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>300</y>
-     <width>160</width>
-     <height>30</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
@@ -252,7 +232,27 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_total">
+  <widget class="QTextBrowser" name="textBrowser_monthly">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>255</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextBrowser" name="textBrowser_overpay">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>300</y>
+     <width>160</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextBrowser" name="textBrowser_total">
    <property name="geometry">
     <rect>
      <x>230</x>

@@ -30,11 +30,11 @@ void AnotherWindow::equal_click() {
 
   QString period_str = ui->lineEdit_2->text();
   QString selectedText = ui->comboBox->currentText();
-  int period = 0;
+  double period = 0;
   if (selectedText == "лет") {
-    period = period_str.toInt() * 12;
+    period = period_str.toDouble() * 12;
   } else if (selectedText == "месяцев") {
-    period = period_str.toInt();
+    period = period_str.toDouble();
   }
  
 
@@ -59,7 +59,7 @@ void AnotherWindow::equal_click() {
   }
 
   // Выводим результат на экран
-  ui->lineEdit_monthly->setText(QString::number(monthly, 'f', 2));
-  ui->lineEdit_overpay->setText(QString::number(overpay, 'f', 2));
-  ui->lineEdit_total->setText(QString::number(total, 'f', 2));
+  ui->textBrowser_monthly->setText(QString::number(monthly, 'f', 2));
+  ui->textBrowser_overpay->setText(QString::number(overpay, 'f', 2));
+  ui->textBrowser_total->setText(QString::number(total, 'f', 2));
 }

@@ -240,14 +240,14 @@ double calculateRPN(char* rpn) {
           result = atan(operand);
           break;
         case 'l':
-          if (operand > 0) {
+          if (operand < 0) {
             printf("Ошибка: Неправильное значение аргумента\n");
             exit(EXIT_FAILURE);
           }
           result = log(operand);
           break;
         case 'L':
-          if (operand > 0) {
+          if (operand < 0) {
             printf("Ошибка: Неправильное значение аргумента\n");
             exit(EXIT_FAILURE);
           }
