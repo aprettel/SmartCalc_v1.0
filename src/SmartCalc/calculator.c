@@ -65,8 +65,13 @@ void infixToRPN(const char* infix, char* rpn) {
   int infixLength = strlen(infix);
   int rpnIndex = 0;
   char lastChar = '\0';
-
+  int isUnaryMinus = 0;
   for (int i = 0; i < infixLength; i++) {
+    if (isUnaryMinus) {
+        rpn[rpnIndex++] = '-';
+        isUnaryMinus = 0;
+    }
+
     if (isdigit(infix[i])) {
       while (isdigit(infix[i]) || infix[i] == '.') {
         rpn[rpnIndex++] = infix[i++];
@@ -86,6 +91,13 @@ void infixToRPN(const char* infix, char* rpn) {
         pop(&stack);
       }
       lastChar = infix[i];
+    } else if (infix[i] == '-' && (i == 0 || isOperator(infix[i-1]) || infix[i-1] == '(')) {
+        isUnaryMinus = 1;
+        push(&stack, infix[i]);
+        push(&stack, '0');
+        lastChar = infix[i];
+        continue; 
+      
     } else if (isOperator(infix[i])) {
       if (isOperator(lastChar)) {
         printf("Ошибка: Неверный формат выражения\n");
@@ -174,7 +186,7 @@ double calculateRPN(char* rpn) {
   char* token = strtok(rpn, " ");
 
   while (token) {
-    if (isdigit(token[0])) {
+    if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
       double value = atof(token);
       push(&stack, value);
     } else if (isOperator(token[0])) {
@@ -187,7 +199,12 @@ double calculateRPN(char* rpn) {
           result = operand1 + operand2;
           break;
         case '-':
-          result = operand1 - operand2;
+          if (strlen(token) > 1) { // проверяем, является ли оператор унарным минусом
+            push(&stack, -operand2);
+            continue; // переходим к следующей итерации цикла while
+          } else {
+            result = operand1 - operand2;
+          }
           break;
         case '*':
           result = operand1 * operand2;
@@ -206,7 +223,6 @@ double calculateRPN(char* rpn) {
           result = fmod(operand1, operand2);
           break;
       }
-
       push(&stack, result);
     } else if (isLetter(token[0])) {
       double operand = pop(&stack);
@@ -269,25 +285,26 @@ double calculateRPN(char* rpn) {
   return pop(&stack);
 }
 
-// int main() {
-//   // char infix[MAX_EXPRESSION_LENGTH] = "2*sin(5)-5";
-//   // char infix[MAX_EXPRESSION_LENGTH] = "cos(5)";
-//   // char infix[MAX_EXPRESSION_LENGTH] = "3*(-4)";
-//   // char infix[MAX_EXPRESSION_LENGTH] = "3*(4)";
-//   char infix[MAX_EXPRESSION_LENGTH];
-//   char rpn[MAX_EXPRESSION_LENGTH];
+int main() {
+  // char infix[MAX_EXPRESSION_LENGTH] = "2*sin(5)-5";
+  // char infix[MAX_EXPRESSION_LENGTH] = "cos(5)";
+  // char infix[MAX_EXPRESSION_LENGTH] = "3*(-4)";
+  // char infix[MAX_EXPRESSION_LENGTH] = "-3*(4)";
+  char infix[MAX_EXPRESSION_LENGTH];
 
-//   printf("введи выражение: ");
-//   fgets(infix, MAX_EXPRESSION_LENGTH, stdin);
-//   infix[strlen(infix) - 1] = '\0';  // удаляем символ перевода строки
+  char rpn[MAX_EXPRESSION_LENGTH];
 
-//   infixToRPN(infix, rpn);
+  printf("введи выражение: ");
+  fgets(infix, MAX_EXPRESSION_LENGTH, stdin);
+  infix[strlen(infix) - 1] = '\0';  // удаляем символ перевода строки
 
-//   printf("перевод в RPN: %s\n", rpn);
+  infixToRPN(infix, rpn);
 
-//   double result = calculateRPN(rpn);
+  printf("перевод в RPN: %s\n", rpn);
 
-//   printf("результат: %lf\n", result);
+  double result = calculateRPN(rpn);
 
-//   return 0;
-// }
+  printf("результат: %lf\n", result);
+
+  return 0;
+}

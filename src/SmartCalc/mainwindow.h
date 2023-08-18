@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QMessageBox>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
