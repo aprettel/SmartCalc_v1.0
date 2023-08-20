@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 SOURCES += \
     creditwindow.cpp \
+    graphwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     calculator.c \
@@ -18,12 +19,14 @@ SOURCES += \
 
 HEADERS += \
     creditwindow.h \
+    graphwindow.h \
     mainwindow.h \
     calculator.h \
     credit_calc.h \
     qcustomplot.h
 
 FORMS += \
+    graphwindow.ui \
     mainwindow.ui \
     creditwindow.ui
 

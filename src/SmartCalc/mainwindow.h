@@ -1,7 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <creditwindow.h>
+#include "graphwindow.h"
+#include "creditwindow.h"
 
 #include <QMainWindow>
 #include <QString>
@@ -24,6 +25,7 @@ class MainWindow : public QMainWindow {
  private slots:
   // Слоты от кнопок главного окна
   void on_creditButton_clicked();
+  void on_graphButton_clicked();
 
   void num_and_funcs_click();
   void C_click();
@@ -34,5 +36,6 @@ class MainWindow : public QMainWindow {
  private:
   Ui::MainWindow *ui;
   AnotherWindow *creditWindow;
+  GraphWindow *graphWindow;
 };
 #endif  // MAINWINDOW_H

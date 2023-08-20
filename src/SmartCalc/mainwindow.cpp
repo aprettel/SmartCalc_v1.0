@@ -40,18 +40,25 @@ MainWindow::MainWindow(QWidget* parent)
 
   // подсчитываем
   connect(ui->pushButton_equal, SIGNAL(clicked()), this, SLOT(equal_click()));
-
-  // инициализируем второе окно
-  creditWindow = new AnotherWindow();
-  // подключаем к слоту запуска главного окна по кнопке во втором окне
-  connect(creditWindow, &AnotherWindow::MainWindow, this, &MainWindow::show);
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::on_creditButton_clicked() {
+  // инициализируем второе окно
+  creditWindow = new AnotherWindow();
+  // подключаем к слоту запуска главного окна по кнопке во втором окне
+  connect(creditWindow, &AnotherWindow::MainWindow, this, &MainWindow::show);
   creditWindow->show();  // показываем второе окно
   this->close();         // закрываем основное окно
+}
+
+void MainWindow::on_graphButton_clicked() {
+  QString x = ui->lineEdit_2->text();
+  QString y = ui->lineEdit_3->text();
+  graphWindow = new GraphWindow();
+  graphWindow->show();
+  graphWindow->activateWindow();
 }
 
 void MainWindow::num_and_funcs_click() {

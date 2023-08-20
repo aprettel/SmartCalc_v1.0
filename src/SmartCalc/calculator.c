@@ -65,13 +65,15 @@ void infixToRPN(const char* infix, char* rpn) {
   int infixLength = strlen(infix);
   int rpnIndex = 0;
   char lastChar = '\0';
-  int isUnaryMinus = 0;
+  int isUnaryMinus = 0, isUnaryPlus = 0;
   for (int i = 0; i < infixLength; i++) {
     if (isUnaryMinus) {
         rpn[rpnIndex++] = '-';
         isUnaryMinus = 0;
     }
-
+    if (isUnaryPlus) {
+        isUnaryPlus = 0;
+    }
     if (isdigit(infix[i])) {
       while (isdigit(infix[i]) || infix[i] == '.') {
         rpn[rpnIndex++] = infix[i++];
@@ -97,7 +99,9 @@ void infixToRPN(const char* infix, char* rpn) {
         push(&stack, '0');
         lastChar = infix[i];
         continue; 
-      
+    } else if (infix[i] == '+' && (i == 0 || isOperator(infix[i-1]) || infix[i-1] == '(')) {
+        isUnaryPlus = 1;
+        continue; 
     } else if (isOperator(infix[i])) {
       if (isOperator(lastChar)) {
         printf("Ошибка: Неверный формат выражения\n");
@@ -285,26 +289,26 @@ double calculateRPN(char* rpn) {
   return pop(&stack);
 }
 
-int main() {
-  // char infix[MAX_EXPRESSION_LENGTH] = "2*sin(5)-5";
-  // char infix[MAX_EXPRESSION_LENGTH] = "cos(5)";
-  // char infix[MAX_EXPRESSION_LENGTH] = "3*(-4)";
-  // char infix[MAX_EXPRESSION_LENGTH] = "-3*(4)";
-  char infix[MAX_EXPRESSION_LENGTH];
+// int main() {
+//   // char infix[MAX_EXPRESSION_LENGTH] = "2*sin(5)-5";
+//   // char infix[MAX_EXPRESSION_LENGTH] = "cos(5)";
+//   // char infix[MAX_EXPRESSION_LENGTH] = "3*(+4)";
+//   // char infix[MAX_EXPRESSION_LENGTH] = "+3*(4)";
+//   char infix[MAX_EXPRESSION_LENGTH];
 
-  char rpn[MAX_EXPRESSION_LENGTH];
+//   char rpn[MAX_EXPRESSION_LENGTH];
 
-  printf("введи выражение: ");
-  fgets(infix, MAX_EXPRESSION_LENGTH, stdin);
-  infix[strlen(infix) - 1] = '\0';  // удаляем символ перевода строки
+//   printf("введи выражение: ");
+//   fgets(infix, MAX_EXPRESSION_LENGTH, stdin);
+//   infix[strlen(infix) - 1] = '\0';  // удаляем символ перевода строки
 
-  infixToRPN(infix, rpn);
+//   infixToRPN(infix, rpn);
 
-  printf("перевод в RPN: %s\n", rpn);
+//   printf("перевод в RPN: %s\n", rpn);
 
-  double result = calculateRPN(rpn);
+//   double result = calculateRPN(rpn);
 
-  printf("результат: %lf\n", result);
+//   printf("результат: %lf\n", result);
 
-  return 0;
-}
+//   return 0;
+// }
