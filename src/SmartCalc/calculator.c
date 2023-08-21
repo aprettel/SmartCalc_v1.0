@@ -98,10 +98,10 @@ void infixToRPN(const char* infix, char* rpn) {
         push(&stack, infix[i]);
         push(&stack, '0');
         lastChar = infix[i];
-        continue; 
+        continue;
     } else if (infix[i] == '+' && (i == 0 || isOperator(infix[i-1]) || infix[i-1] == '(')) {
         isUnaryPlus = 1;
-        continue; 
+        continue;
     } else if (isOperator(infix[i])) {
       if (isOperator(lastChar)) {
         printf("Ошибка: Неверный формат выражения\n");
@@ -191,7 +191,7 @@ double calculateRPN(char* rpn) {
 
   while (token) {
     if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
-      double value = atof(token);
+      double value =  strtod(token, NULL);
       push(&stack, value);
     } else if (isOperator(token[0])) {
       double operand2 = pop(&stack);
@@ -205,7 +205,7 @@ double calculateRPN(char* rpn) {
         case '-':
           if (strlen(token) > 1) { // проверяем, является ли оператор унарным минусом
             push(&stack, -operand2);
-            continue; // переходим к следующей итерации цикла while
+//            continue; // переходим к следующей итерации цикла while
           } else {
             result = operand1 - operand2;
           }

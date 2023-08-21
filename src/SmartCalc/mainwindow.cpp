@@ -74,48 +74,54 @@ void MainWindow::on_graphButton_clicked() {
         ui->plot->axisRect()->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
 
         // Подготавливаем переменные для вычисления функции
+
         double x = ui->lineEdit_2->text().toDouble(); // min X
         double y = ui->lineEdit_3->text().toDouble(); // max X
-        double step = 0.01; // Шаг изменения аргумента x
 
-        QVector<double> xData;
-        QVector<double> yData;
+        if ((x >= -1000000 && x <= 1000000) && (y >= -1000000 && y <= 1000000)) {
+            double step = 0.01; // Шаг изменения аргумента x
 
-        // Перебираем точки и вычисляем значение функции
-        while (x <= y) {
-            // Создаем выражение с аргументом x
-            QString expr = expression;
-            expr.replace("x", QString::number(x));
+            QVector<double> xData;
+            QVector<double> yData;
 
-            // Конвертируем в обратную польскую запись
-            char rpn[MAX_EXPRESSION_LENGTH];
-            infixToRPN(expr.toStdString().c_str(), rpn);
+            // Перебираем точки и вычисляем значение функции
+            while (x <= y) {
+                // Создаем выражение с аргументом x
+                QString expr = expression;
+                expr.replace("x", QString::number(x, 'f', 6));
 
-            // Вычисляем значение выражения
-            double result = calculateRPN(rpn);
+                // Конвертируем в обратную польскую запись
+                char rpn[MAX_EXPRESSION_LENGTH];
+                infixToRPN(expr.toStdString().c_str(), rpn);
 
-            // Добавляем значения в векторы xData и yData
-            xData.append(x);
-            yData.append(result);
+                // Вычисляем значение выражения
+                double result = calculateRPN(rpn);
 
-            // Увеличиваем x на шаг
-            x += step;
+                // Добавляем значения в векторы xData и yData
+                xData.append(x);
+                yData.append(result);
+
+                // Увеличиваем x на шаг
+                x += step;
+            }
+
+            // Добавляем значения в график
+            ui->plot->graph(0)->setData(xData, yData);
+
+            // Устанавливаем подписи осей
+    //        ui->plot->xAxis->setLabel("x");
+    //        ui->plot->yAxis->setLabel("y");
+
+            // Устанавливаем интервалы осей
+            ui->plot->xAxis->setRange(xData.first(), xData.last());
+            ui->plot->yAxis->setRange(*std::min_element(yData.constBegin(), yData.constEnd()),
+                                      *std::max_element(yData.constBegin(), yData.constEnd()));
+
+            // Обновляем график
+            ui->plot->replot();
+        } else {
+            QMessageBox::warning(this, "Ошибка", "Область определения и область значения функций должна быть ограничена числами от -1000000 до 1000000.");
         }
-
-        // Добавляем значения в график
-        ui->plot->graph(0)->setData(xData, yData);
-
-        // Устанавливаем подписи осей
-//        ui->plot->xAxis->setLabel("x");
-//        ui->plot->yAxis->setLabel("y");
-
-        // Устанавливаем интервалы осей
-        ui->plot->xAxis->setRange(xData.first(), xData.last());
-        ui->plot->yAxis->setRange(*std::min_element(yData.constBegin(), yData.constEnd()),
-                                  *std::max_element(yData.constBegin(), yData.constEnd()));
-
-        // Обновляем график
-        ui->plot->replot();
 }
 
 void MainWindow::num_and_funcs_click() {
@@ -138,7 +144,7 @@ void MainWindow::change_X() {
   // подставить значение X в выражение
   QString expression = ui->lineEdit->text();
   if (expression.contains("x")) {  // проверка наличия символа "x"
-    expression.replace("x", QString::number(X));
+    expression.replace("x", QString::number(X, 'f', 6));
     // обновить значение выражения в lineEdit
     ui->lineEdit->setText(expression);
     ui->lineEdit_2->setText("");
