@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "graphwindow.h"
 #include "creditwindow.h"
 
 #include <QMainWindow>
@@ -36,6 +35,7 @@ class MainWindow : public QMainWindow {
  private:
   Ui::MainWindow *ui;
   AnotherWindow *creditWindow;
-  GraphWindow *graphWindow;
+
+
 };
 #endif  // MAINWINDOW_H
