@@ -59,9 +59,8 @@ void MainWindow::on_graphButton_clicked() {
 
   QString expr = ui->lineEdit->text();
   QRegularExpression validExpression(
-      "[\\+\\-\\*/"
-      "\\.^\\(\\)\\s\\d|x|sin\\(|cos\\(|tan\\(|asin\\(|acos\\(|atan\\(|log\\(|"
-      "lg\\(|sqrt\\(\\)]*");
+      "[\\+\\%\\-\\*/"
+      "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
   if (!validExpression.match(expr).hasMatch()) {
     QMessageBox::warning(this, "Ошибка", "Некорректное выражение функции.");
     return;
@@ -212,9 +211,8 @@ void MainWindow::equal_click() {
   }
 
   QRegularExpression validExpression(
-      "[\\+\\-\\*/"
-      "\\.^\\(\\)\\s\\d|x|sin\\(|cos\\(|tan\\(|asin\\(|acos\\(|atan\\(|log\\(|"
-      "lg\\(|sqrt\\(\\)]*");
+      "[\\+\\%\\-\\*/"
+      "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
   QRegularExpressionValidator validatorExpression(validExpression, this);
   int pos = 0;
   QValidator::State state = validatorExpression.validate(expression, pos);
