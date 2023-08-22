@@ -23,34 +23,42 @@ void AnotherWindow::on_mainButton_clicked() {
 }
 
 void AnotherWindow::equal_click() {
-  // Получаем введенное пользователем выражение
+
   QString credit_sum_str = ui->lineEdit_1->text();
+  QString period_str = ui->lineEdit_2->text();
+  QString percent_str = ui->lineEdit_3->text();
+
   bool ok;
+
   double credit_sum = credit_sum_str.toDouble(&ok);
-  if (!ok) {
-    QMessageBox::warning(this, "Ошибка",
-                         "Некорректное значение суммы кредита.");
+  if (!ok || credit_sum <= 0) {
+    QMessageBox::warning(this, "Ошибка", "Некорректное значение суммы кредита. Введите положительное число.");
     return;
   }
 
-  QString period_str = ui->lineEdit_2->text();
+  double period = period_str.toDouble(&ok);
   QString selectedText = ui->comboBox->currentText();
-  double period = 0;
+
   if (selectedText == "лет") {
+      if (!ok || period <= 0 || period > 50) {
+        QMessageBox::warning(this, "Ошибка", "Некорректное значение срока кредита. Введите положительное число от 1 до 50.");
+        return;
+      }
     period = period_str.toDouble() * 12;
   } else if (selectedText == "месяцев") {
+      if (!ok || period <= 0 || period > 600) {
+        QMessageBox::warning(this, "Ошибка", "Некорректное значение срока кредита. Введите положительное число от 1 до 600.");
+        return;
+      }
     period = period_str.toDouble();
   } else {
-    QMessageBox::warning(this, "Ошибка",
-                         "Необходимо выбрать единицу измерения периода.");
+    QMessageBox::warning(this, "Ошибка", "Необходимо выбрать единицу измерения периода.");
     return;
   }
 
-  QString percent_str = ui->lineEdit_3->text();
   double percent = percent_str.toDouble(&ok);
-  if (!ok) {
-    QMessageBox::warning(this, "Ошибка",
-                         "Некорректное значение процентной ставки.");
+  if (!ok || percent <= 0 || percent > 999) {
+    QMessageBox::warning(this, "Ошибка", "Некорректное значение процентной ставки. Введите положительное число до 999.");
     return;
   }
 
@@ -67,11 +75,12 @@ void AnotherWindow::equal_click() {
     overpay = D_Overpayment(credit_sum, period, percent);
     total = TotalPayout(credit_sum, overpay);
   } else {
-    QMessageBox::warning(this, "Ошибка",
-                         "Необходимо выбрать тип ежемесячного платежа");
+    QMessageBox::warning(this, "Ошибка", "Необходимо выбрать тип ежемесячного платежа");
+    return;
   }
 
   ui->textBrowser_monthly->setText(QString::number(monthly, 'f', 2));
   ui->textBrowser_overpay->setText(QString::number(overpay, 'f', 2));
   ui->textBrowser_total->setText(QString::number(total, 'f', 2));
+
 }
