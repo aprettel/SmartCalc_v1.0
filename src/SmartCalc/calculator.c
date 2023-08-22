@@ -69,7 +69,6 @@ void infixToRPN(const char* infix, char* rpn) {
 
   int infixLength = strlen(infix);
   int rpnIndex = 0;
-  char lastChar = '\0';
   int isUnaryMinus = 0, isUnaryPlus = 0;
   for (int i = 0; i < infixLength; i++) {
     if (isUnaryMinus) {
@@ -85,10 +84,8 @@ void infixToRPN(const char* infix, char* rpn) {
       }
       rpn[rpnIndex++] = ' ';
       i--;
-      lastChar = infix[i];
     } else if (infix[i] == '(') {
       push(&stack, infix[i]);
-      lastChar = infix[i];
     } else if (infix[i] == ')') {
       while (!isEmpty(&stack) && stack.data[stack.top] != '(') {
         rpn[rpnIndex++] = pop(&stack);
@@ -97,23 +94,17 @@ void infixToRPN(const char* infix, char* rpn) {
       if (!isEmpty(&stack) && stack.data[stack.top] == '(') {
         pop(&stack);
       }
-      lastChar = infix[i];
     } else if (infix[i] == '-' &&
                (i == 0 || isOperator(infix[i - 1]) || infix[i - 1] == '(')) {
       isUnaryMinus = 1;
       push(&stack, infix[i]);
       push(&stack, '0');
-      lastChar = infix[i];
       continue;
     } else if (infix[i] == '+' &&
                (i == 0 || isOperator(infix[i - 1]) || infix[i - 1] == '(')) {
       isUnaryPlus = 1;
       continue;
     } else if (isOperator(infix[i])) {
-      if (isOperator(lastChar)) {
-        printf("Ошибка: Неверный формат выражения\n");
-        exit(EXIT_FAILURE);
-      }
       while (!isEmpty(&stack) &&
              getPrecedence(infix[i]) <= getPrecedence(stack.data[stack.top]) &&
              stack.data[stack.top] != '(') {
@@ -121,7 +112,6 @@ void infixToRPN(const char* infix, char* rpn) {
         rpn[rpnIndex++] = ' ';
       }
       push(&stack, infix[i]);
-      lastChar = infix[i];
     } else if (isLetter(infix[i])) {
       if ((i + 3 < infixLength) &&
           (infix[i] == 's' && infix[i + 1] == 'i' && infix[i + 2] == 'n' &&

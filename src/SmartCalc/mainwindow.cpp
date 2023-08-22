@@ -146,7 +146,7 @@ void MainWindow::change_X() {
   // подставить значение X в выражение
   QString expression = ui->lineEdit->text();
   if (expression.contains("x")) {  // проверка наличия символа "x"
-    expression.replace("x", QString::number(X, 'f', 6));
+    expression.replace("x", QString::number(X));
     // обновить значение выражения в lineEdit
     ui->lineEdit->setText(expression);
     ui->lineEdit_2->setText("");
@@ -192,13 +192,16 @@ void MainWindow::equal_click() {
   // Проверка наличия числа или операции перед скобкой
   if (expression.contains(")(") || expression.startsWith(")")) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    ui->lineEdit->setText("Error");
     return;
   }
 
   // Проверка наличия точки перед или после другой точки
-  if (expression.contains("..") || expression.startsWith(".") ||
-      expression.endsWith(".")) {
+  QRegularExpression decimalPointRegex("\\.\\d*\\.");
+
+  if (decimalPointRegex.match(expression).hasMatch()) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    ui->lineEdit->setText("Error");
     return;
   }
 
@@ -207,7 +210,14 @@ void MainWindow::equal_click() {
   int closeParenthesesCount = expression.count(")");
   if (openParenthesesCount != closeParenthesesCount) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    ui->lineEdit->setText("Error");
     return;
+  }
+
+  if (expression.contains(" ") || expression.startsWith(" ") || expression.contains("  ")) {
+      QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+      ui->lineEdit->setText("Error");
+      return;
   }
 
   QRegularExpression validExpression(
@@ -219,6 +229,8 @@ void MainWindow::equal_click() {
 
   if (state != QValidator::Acceptable) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    ui->lineEdit->setText("Error");
+    return;
   }
 
   char rpn[MAX_EXPRESSION_LENGTH];
@@ -226,6 +238,7 @@ void MainWindow::equal_click() {
   double result = calculateRPN(rpn);
 
   if (std::isinf(result) || std::isnan(result)) {
+    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");
     return;
   }
