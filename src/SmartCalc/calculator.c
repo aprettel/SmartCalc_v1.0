@@ -222,10 +222,6 @@ double calculateRPN(char* rpn) {
           result = operand1 * operand2;
           break;
         case '/':
-          if (operand2 == 0) {
-            printf("Ошибка: Деление на ноль\n");
-            exit(EXIT_FAILURE);
-          }
           result = operand1 / operand2;
           break;
         case '^':
@@ -251,72 +247,27 @@ double calculateRPN(char* rpn) {
           result = tan(operand);
           break;
         case 'S':
-          if (operand < -1 || operand > 1) {
-            printf("Ошибка: Неправильное значение аргумента\n");
-            exit(EXIT_FAILURE);
-          }
           result = asin(operand);
           break;
         case 'C':
-          if (operand < -1 || operand > 1) {
-            printf("Ошибка: Неправильное значение аргумента\n");
-            exit(EXIT_FAILURE);
-          }
           result = acos(operand);
           break;
         case 'T':
           result = atan(operand);
           break;
         case 'l':
-          if (operand < 0) {
-            printf("Ошибка: Неправильное значение аргумента\n");
-            exit(EXIT_FAILURE);
-          }
           result = log(operand);
           break;
         case 'L':
-          if (operand < 0) {
-            printf("Ошибка: Неправильное значение аргумента\n");
-            exit(EXIT_FAILURE);
-          }
           result = log10(operand);
           break;
         case 'Q':
-          if (operand < 0) {
-            printf("Ошибка: Неправильное значение аргумента\n");
-            exit(EXIT_FAILURE);
-          }
           result = sqrt(operand);
           break;
       }
       push(&stack, result);
     }
-
     token = strtok(NULL, " ");
   }
   return pop(&stack);
 }
-
-// int main() {
-//   // char infix[MAX_EXPRESSION_LENGTH] = "2*sin(5)-5";
-//   // char infix[MAX_EXPRESSION_LENGTH] = "cos(5)";
-//   // char infix[MAX_EXPRESSION_LENGTH] = "3*(+4)";
-//   // char infix[MAX_EXPRESSION_LENGTH] = "+3*(4)";
-//   char infix[MAX_EXPRESSION_LENGTH];
-
-//   char rpn[MAX_EXPRESSION_LENGTH];
-
-//   printf("введи выражение: ");
-//   fgets(infix, MAX_EXPRESSION_LENGTH, stdin);
-//   infix[strlen(infix) - 1] = '\0';  // удаляем символ перевода строки
-
-//   infixToRPN(infix, rpn);
-
-//   printf("перевод в RPN: %s\n", rpn);
-
-//   double result = calculateRPN(rpn);
-
-//   printf("результат: %lf\n", result);
-
-//   return 0;
-// }

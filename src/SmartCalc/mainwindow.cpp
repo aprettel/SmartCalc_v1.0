@@ -87,31 +87,37 @@ void MainWindow::on_graphButton_clicked() {
     QVector<double> xData;
     QVector<double> yData;
 
-    while (x1 <= x2) {
-      QString exprWithValue = expr;
-      exprWithValue.replace("x", QString::number(x1, 'f', 6));
+    if(x1 < x2) {
+        while (x1 <= x2) {
+          QString exprWithValue = expr;
+          exprWithValue.replace("x", QString::number(x1, 'f', 6));
 
-      char rpn[MAX_EXPRESSION_LENGTH];
-      infixToRPN(exprWithValue.toStdString().c_str(), rpn);
-      double result = calculateRPN(rpn);
-      xData.append(x1);
-      yData.append(result);
+          char rpn[MAX_EXPRESSION_LENGTH];
+          infixToRPN(exprWithValue.toStdString().c_str(), rpn);
+          double result = calculateRPN(rpn);
+          xData.append(x1);
+          yData.append(result);
 
-      x1 += step;
+          x1 += step;
+        }
+
+        ui->plot->graph(0)->setData(xData, yData);
+        ui->plot->xAxis->setRange(xData.first(), xData.last());
+        ui->plot->yAxis->setRange(
+            *std::min_element(yData.constBegin(), yData.constEnd()),
+            *std::max_element(yData.constBegin(), yData.constEnd()));
+
+        QCPAxisRect* rect = ui->plot->axisRect();
+        rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
+        rect->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
+        rect->setRangeZoom(Qt::Horizontal | Qt::Vertical);
+
+        ui->plot->replot();
+    } else {
+        QMessageBox::warning(this, "Ошибка",
+                             "Некорректное значение минимального X и максимального X.");
+        return;
     }
-
-    ui->plot->graph(0)->setData(xData, yData);
-    ui->plot->xAxis->setRange(xData.first(), xData.last());
-    ui->plot->yAxis->setRange(
-        *std::min_element(yData.constBegin(), yData.constEnd()),
-        *std::max_element(yData.constBegin(), yData.constEnd()));
-
-    QCPAxisRect* rect = ui->plot->axisRect();
-    rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
-    rect->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
-    rect->setRangeZoom(Qt::Horizontal | Qt::Vertical);
-
-    ui->plot->replot();
   } else {
     QMessageBox::warning(
         this, "Ошибка",
@@ -194,11 +200,16 @@ void MainWindow::equal_click() {
 
   if (state != QValidator::Acceptable) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
-    return;
   }
 
   char rpn[MAX_EXPRESSION_LENGTH];
   infixToRPN(expression.toStdString().c_str(), rpn);
   double result = calculateRPN(rpn);
+
+  if (std::isinf(result) || std::isnan(result)) {
+     ui->lineEdit->setText("Error");
+     return;
+   }
+
   ui->lineEdit->setText(QString::number(result, 'f', 6));
 }
