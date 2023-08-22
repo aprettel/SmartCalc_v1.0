@@ -1,13 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "creditwindow.h"
-
 #include <QMainWindow>
-#include <QString>
 #include <QMessageBox>
-#include <QVector>
 #include <QRegularExpression>
+#include <QString>
+#include <QVector>
+
+#include "creditwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -87,36 +87,37 @@ void MainWindow::on_graphButton_clicked() {
     QVector<double> xData;
     QVector<double> yData;
 
-    if(x1 < x2) {
-        while (x1 <= x2) {
-          QString exprWithValue = expr;
-          exprWithValue.replace("x", QString::number(x1, 'f', 6));
+    if (x1 < x2) {
+      while (x1 <= x2) {
+        QString exprWithValue = expr;
+        exprWithValue.replace("x", QString::number(x1, 'f', 6));
 
-          char rpn[MAX_EXPRESSION_LENGTH];
-          infixToRPN(exprWithValue.toStdString().c_str(), rpn);
-          double result = calculateRPN(rpn);
-          xData.append(x1);
-          yData.append(result);
+        char rpn[MAX_EXPRESSION_LENGTH];
+        infixToRPN(exprWithValue.toStdString().c_str(), rpn);
+        double result = calculateRPN(rpn);
+        xData.append(x1);
+        yData.append(result);
 
-          x1 += step;
-        }
+        x1 += step;
+      }
 
-        ui->plot->graph(0)->setData(xData, yData);
-        ui->plot->xAxis->setRange(xData.first(), xData.last());
-        ui->plot->yAxis->setRange(
-            *std::min_element(yData.constBegin(), yData.constEnd()),
-            *std::max_element(yData.constBegin(), yData.constEnd()));
+      ui->plot->graph(0)->setData(xData, yData);
+      ui->plot->xAxis->setRange(xData.first(), xData.last());
+      ui->plot->yAxis->setRange(
+          *std::min_element(yData.constBegin(), yData.constEnd()),
+          *std::max_element(yData.constBegin(), yData.constEnd()));
 
-        QCPAxisRect* rect = ui->plot->axisRect();
-        rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
-        rect->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
-        rect->setRangeZoom(Qt::Horizontal | Qt::Vertical);
+      QCPAxisRect* rect = ui->plot->axisRect();
+      rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
+      rect->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
+      rect->setRangeZoom(Qt::Horizontal | Qt::Vertical);
 
-        ui->plot->replot();
+      ui->plot->replot();
     } else {
-        QMessageBox::warning(this, "Ошибка",
-                             "Некорректное значение минимального X и максимального X.");
-        return;
+      QMessageBox::warning(
+          this, "Ошибка",
+          "Некорректное значение минимального X и максимального X.");
+      return;
     }
   } else {
     QMessageBox::warning(
@@ -189,6 +190,26 @@ void MainWindow::AC_click() {
 
 void MainWindow::equal_click() {
   QString expression = ui->lineEdit->text();
+  // Проверка наличия числа или операции перед скобкой
+  if (expression.contains(")(") || expression.startsWith(")")) {
+    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    return;
+  }
+
+  // Проверка наличия точки перед или после другой точки
+  if (expression.contains("..") || expression.startsWith(".") ||
+      expression.endsWith(".")) {
+    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    return;
+  }
+
+  // Проверка правильного использования скобок
+  int openParenthesesCount = expression.count("(");
+  int closeParenthesesCount = expression.count(")");
+  if (openParenthesesCount != closeParenthesesCount) {
+    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    return;
+  }
 
   QRegularExpression validExpression(
       "[\\+\\-\\*/"
@@ -207,9 +228,9 @@ void MainWindow::equal_click() {
   double result = calculateRPN(rpn);
 
   if (std::isinf(result) || std::isnan(result)) {
-     ui->lineEdit->setText("Error");
-     return;
-   }
+    ui->lineEdit->setText("Error");
+    return;
+  }
 
   ui->lineEdit->setText(QString::number(result, 'f', 6));
 }

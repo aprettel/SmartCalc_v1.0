@@ -1,8 +1,8 @@
 #ifndef ANOTHERWINDOW_H
 #define ANOTHERWINDOW_H
 
-#include <QWidget>
 #include <QMessageBox>
+#include <QWidget>
 
 namespace Ui {
 class AnotherWindow;
