@@ -7,6 +7,7 @@
 #include <QString>
 #include <QMessageBox>
 #include <QVector>
+#include <QRegularExpression>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,7 +36,6 @@ class MainWindow : public QMainWindow {
  private:
   Ui::MainWindow *ui;
   AnotherWindow *creditWindow;
-
-
 };
+
 #endif  // MAINWINDOW_H

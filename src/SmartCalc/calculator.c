@@ -36,12 +36,15 @@ int getPrecedence(char c) {
     case '+':
     case '-':
       result = 1;
+      break;
     case '*':
     case '/':
     case '%':
       result = 2;
+      break;
     case '^':
       result = 3;
+      break;
     case 's':
     case 'c':
     case 't':
@@ -52,8 +55,10 @@ int getPrecedence(char c) {
     case 'L':
     case 'Q':
       result = 4;
+      break;
     default:
       result = 0;
+      break;
   }
   return result;
 }
@@ -68,11 +73,11 @@ void infixToRPN(const char* infix, char* rpn) {
   int isUnaryMinus = 0, isUnaryPlus = 0;
   for (int i = 0; i < infixLength; i++) {
     if (isUnaryMinus) {
-        rpn[rpnIndex++] = '-';
-        isUnaryMinus = 0;
+      rpn[rpnIndex++] = '-';
+      isUnaryMinus = 0;
     }
     if (isUnaryPlus) {
-        isUnaryPlus = 0;
+      isUnaryPlus = 0;
     }
     if (isdigit(infix[i])) {
       while (isdigit(infix[i]) || infix[i] == '.') {
@@ -93,15 +98,17 @@ void infixToRPN(const char* infix, char* rpn) {
         pop(&stack);
       }
       lastChar = infix[i];
-    } else if (infix[i] == '-' && (i == 0 || isOperator(infix[i-1]) || infix[i-1] == '(')) {
-        isUnaryMinus = 1;
-        push(&stack, infix[i]);
-        push(&stack, '0');
-        lastChar = infix[i];
-        continue;
-    } else if (infix[i] == '+' && (i == 0 || isOperator(infix[i-1]) || infix[i-1] == '(')) {
-        isUnaryPlus = 1;
-        continue;
+    } else if (infix[i] == '-' &&
+               (i == 0 || isOperator(infix[i - 1]) || infix[i - 1] == '(')) {
+      isUnaryMinus = 1;
+      push(&stack, infix[i]);
+      push(&stack, '0');
+      lastChar = infix[i];
+      continue;
+    } else if (infix[i] == '+' &&
+               (i == 0 || isOperator(infix[i - 1]) || infix[i - 1] == '(')) {
+      isUnaryPlus = 1;
+      continue;
     } else if (isOperator(infix[i])) {
       if (isOperator(lastChar)) {
         printf("Ошибка: Неверный формат выражения\n");
@@ -191,7 +198,7 @@ double calculateRPN(char* rpn) {
 
   while (token) {
     if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
-      double value =  strtod(token, NULL);
+      double value = strtod(token, NULL);
       push(&stack, value);
     } else if (isOperator(token[0])) {
       double operand2 = pop(&stack);
@@ -203,9 +210,10 @@ double calculateRPN(char* rpn) {
           result = operand1 + operand2;
           break;
         case '-':
-          if (strlen(token) > 1) { // проверяем, является ли оператор унарным минусом
+          if (strlen(token) >
+              1) {  // проверяем, является ли оператор унарным минусом
             push(&stack, -operand2);
-//            continue; // переходим к следующей итерации цикла while
+            continue;  // переходим к следующей итерации цикла while
           } else {
             result = operand1 - operand2;
           }

@@ -98,25 +98,25 @@ double D_Overpayment(double credit_sum, double period, double percent) {
 //  double percent = 0.0;
 //  scanf("%lf", &percent);
 
- // char* annuity = "аннуитетный";
- // char* different "дифференцированный";
+// char* annuity = "аннуитетный";
+// char* different "дифференцированный";
 
 //  char type_pay[25];
 //  scanf("%s", type_pay);
 //  payment_type(type_pay, credit_sum, period, percent);
- //   printf("%d\n", payment_type(type_pay, credit_sum, period, percent));
+//   printf("%d\n", payment_type(type_pay, credit_sum, period, percent));
 
-  //  double monthlyA = A_MonthlyPayment(credit_sum, period, percent);
-  //  printf("%.2lf\n", monthlyA);
+//  double monthlyA = A_MonthlyPayment(credit_sum, period, percent);
+//  printf("%.2lf\n", monthlyA);
 
-  // double monthlyD = D_MonthlyPayment(credit_sum, period, percent);
-  // printf("%.2lf\n", monthlyD);
+// double monthlyD = D_MonthlyPayment(credit_sum, period, percent);
+// printf("%.2lf\n", monthlyD);
 
- //   double overpay = D_Overpayment(credit_sum, period, percent);
- //   printf("%.2lf\n", overpay);
+//   double overpay = D_Overpayment(credit_sum, period, percent);
+//   printf("%.2lf\n", overpay);
 
- //   double total = TotalPayout(credit_sum, overpay);
- //   printf("%.2lf\n", total);
+//   double total = TotalPayout(credit_sum, overpay);
+//   printf("%.2lf\n", total);
 
 //  return 0;
 // }

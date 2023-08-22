@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 
-#include "ui_mainwindow.h"
 #include "calculator.c"
-
+#include "ui_mainwindow.h"
 
 extern "C" {
 #include "calculator.h"
@@ -41,87 +40,84 @@ MainWindow::MainWindow(QWidget* parent)
 
   // подсчитываем
   connect(ui->pushButton_equal, SIGNAL(clicked()), this, SLOT(equal_click()));
-
-  // инициализируем второе окно
-  creditWindow = new AnotherWindow();
-  // подключаем к слоту запуска главного окна по кнопке во втором окне
-  connect(creditWindow, &AnotherWindow::MainWindow, this, &MainWindow::show);
-
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::on_creditButton_clicked() {
-  creditWindow->show();  // показываем второе окно
-  this->close();         // закрываем основное окно
+  creditWindow = new AnotherWindow();
+  connect(creditWindow, &AnotherWindow::MainWindow, this, &MainWindow::show);
+  creditWindow->show();
+  this->close();
 }
 
 void MainWindow::on_graphButton_clicked() {
-    // Получаем данные из LineEdit
-        QString expression = ui->lineEdit->text(); // Введенное пользователем выражение
+  ui->plot->clearGraphs();
+  ui->plot->addGraph();
 
-        // Очищаем график
-        ui->plot->clearGraphs();
+  ui->plot->setInteractions(QCP::iRangeZoom | QCP::iRangeDrag);
 
-        // Создаем график функции
-        ui->plot->addGraph();
+  QString expr = ui->lineEdit->text();
+  QRegularExpression validExpression(
+      "[\\+\\-\\*/"
+      "\\.^\\(\\)\\s\\d|x|sin\\(|cos\\(|tan\\(|asin\\(|acos\\(|atan\\(|log\\(|"
+      "lg\\(|sqrt\\(\\)]*");
+  if (!validExpression.match(expr).hasMatch()) {
+    QMessageBox::warning(this, "Ошибка", "Некорректное выражение функции.");
+    return;
+  }
 
-        // Добавление обработчика событий колесика мыши
-        ui->plot->setInteractions(QCP::iRangeZoom | QCP::iRangeDrag);
+  bool ok;
+  double x1 = ui->lineEdit_2->text().toDouble(&ok);  // min X
+  if (!ok) {
+    QMessageBox::warning(this, "Ошибка",
+                         "Некорректное значение минимального X.");
+    return;
+  }
+  double x2 = ui->lineEdit_3->text().toDouble(&ok);  // max X
+  if (!ok) {
+    QMessageBox::warning(this, "Ошибка",
+                         "Некорректное значение максимального X.");
+    return;
+  }
 
-        // Установка масштабируемости и перемещения графика по оси x и y
-        ui->plot->axisRect()->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
-        ui->plot->axisRect()->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
+  if ((x1 >= -1000000 && x1 <= 1000000) && (x2 >= -1000000 && x2 <= 1000000)) {
+    double step = 0.01;
 
-        // Подготавливаем переменные для вычисления функции
+    QVector<double> xData;
+    QVector<double> yData;
 
-        double x = ui->lineEdit_2->text().toDouble(); // min X
-        double y = ui->lineEdit_3->text().toDouble(); // max X
+    while (x1 <= x2) {
+      QString exprWithValue = expr;
+      exprWithValue.replace("x", QString::number(x1, 'f', 6));
 
-        if ((x >= -1000000 && x <= 1000000) && (y >= -1000000 && y <= 1000000)) {
-            double step = 0.01; // Шаг изменения аргумента x
+      char rpn[MAX_EXPRESSION_LENGTH];
+      infixToRPN(exprWithValue.toStdString().c_str(), rpn);
+      double result = calculateRPN(rpn);
+      xData.append(x1);
+      yData.append(result);
 
-            QVector<double> xData;
-            QVector<double> yData;
+      x1 += step;
+    }
 
-            // Перебираем точки и вычисляем значение функции
-            while (x <= y) {
-                // Создаем выражение с аргументом x
-                QString expr = expression;
-                expr.replace("x", QString::number(x, 'f', 6));
+    ui->plot->graph(0)->setData(xData, yData);
+    ui->plot->xAxis->setRange(xData.first(), xData.last());
+    ui->plot->yAxis->setRange(
+        *std::min_element(yData.constBegin(), yData.constEnd()),
+        *std::max_element(yData.constBegin(), yData.constEnd()));
 
-                // Конвертируем в обратную польскую запись
-                char rpn[MAX_EXPRESSION_LENGTH];
-                infixToRPN(expr.toStdString().c_str(), rpn);
+    QCPAxisRect* rect = ui->plot->axisRect();
+    rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
+    rect->setRangeDragAxes(ui->plot->xAxis, ui->plot->yAxis);
+    rect->setRangeZoom(Qt::Horizontal | Qt::Vertical);
 
-                // Вычисляем значение выражения
-                double result = calculateRPN(rpn);
-
-                // Добавляем значения в векторы xData и yData
-                xData.append(x);
-                yData.append(result);
-
-                // Увеличиваем x на шаг
-                x += step;
-            }
-
-            // Добавляем значения в график
-            ui->plot->graph(0)->setData(xData, yData);
-
-            // Устанавливаем подписи осей
-    //        ui->plot->xAxis->setLabel("x");
-    //        ui->plot->yAxis->setLabel("y");
-
-            // Устанавливаем интервалы осей
-            ui->plot->xAxis->setRange(xData.first(), xData.last());
-            ui->plot->yAxis->setRange(*std::min_element(yData.constBegin(), yData.constEnd()),
-                                      *std::max_element(yData.constBegin(), yData.constEnd()));
-
-            // Обновляем график
-            ui->plot->replot();
-        } else {
-            QMessageBox::warning(this, "Ошибка", "Область определения и область значения функций должна быть ограничена числами от -1000000 до 1000000.");
-        }
+    ui->plot->replot();
+  } else {
+    QMessageBox::warning(
+        this, "Ошибка",
+        "Область определения и область значения функций должны быть ограничены "
+        "числами от -1000000 до 1000000.");
+  }
 }
 
 void MainWindow::num_and_funcs_click() {
@@ -130,8 +126,8 @@ void MainWindow::num_and_funcs_click() {
   if (currentLineEdit == ui->lineEdit_2) {
     currentLineEdit->setText(currentLineEdit->text() + button->text());
   } else if (currentLineEdit == ui->lineEdit_3) {
-      currentLineEdit->setText(currentLineEdit->text() + button->text());
-   } else if (currentLineEdit == ui->lineEdit) {
+    currentLineEdit->setText(currentLineEdit->text() + button->text());
+  } else if (currentLineEdit == ui->lineEdit) {
     ui->lineEdit->setText(ui->lineEdit->text() + button->text());
   }
 }
@@ -149,7 +145,7 @@ void MainWindow::change_X() {
     ui->lineEdit->setText(expression);
     ui->lineEdit_2->setText("");
   } else {
-      QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
+    QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
   }
 }
 
@@ -161,12 +157,12 @@ void MainWindow::C_click() {
       ui->lineEdit_2->setText(str);
     }
   } else if (ui->lineEdit_3->hasFocus()) {
-      QString str = ui->lineEdit_3->text();
-      if (!str.isEmpty()) {
-        str.chop(1);
-        ui->lineEdit_3->setText(str);
-      }
-    } else {
+    QString str = ui->lineEdit_3->text();
+    if (!str.isEmpty()) {
+      str.chop(1);
+      ui->lineEdit_3->setText(str);
+    }
+  } else {
     QString str = ui->lineEdit->text();
     if (!str.isEmpty()) {
       str.chop(1);
@@ -175,28 +171,34 @@ void MainWindow::C_click() {
   }
 }
 
-
 void MainWindow::AC_click() {
   if (ui->lineEdit_2->hasFocus()) {
-      ui->lineEdit_2->setText("");
+    ui->lineEdit_2->setText("");
   } else if (ui->lineEdit_3->hasFocus()) {
-      ui->lineEdit_3->setText("");
+    ui->lineEdit_3->setText("");
   } else {
-      ui->lineEdit->setText("");
+    ui->lineEdit->setText("");
   }
 }
 
 void MainWindow::equal_click() {
-  // получаем введенное пользователем выражение
   QString expression = ui->lineEdit->text();
+
+  QRegularExpression validExpression(
+      "[\\+\\-\\*/"
+      "\\.^\\(\\)\\s\\d|x|sin\\(|cos\\(|tan\\(|asin\\(|acos\\(|atan\\(|log\\(|"
+      "lg\\(|sqrt\\(\\)]*");
+  QRegularExpressionValidator validatorExpression(validExpression, this);
+  int pos = 0;
+  QValidator::State state = validatorExpression.validate(expression, pos);
+
+  if (state != QValidator::Acceptable) {
+    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
+    return;
+  }
 
   char rpn[MAX_EXPRESSION_LENGTH];
   infixToRPN(expression.toStdString().c_str(), rpn);
-  // передаем выражение в функцию для вычисления
   double result = calculateRPN(rpn);
-
-  // выводим результат на экран
   ui->lineEdit->setText(QString::number(result, 'f', 6));
 }
-
-
