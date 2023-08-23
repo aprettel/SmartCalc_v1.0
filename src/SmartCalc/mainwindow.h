@@ -32,6 +32,7 @@ class MainWindow : public QMainWindow {
   void AC_click();
   void equal_click();
   void change_X();
+  bool isValidExpression(const QString &expression);
 
  private:
   Ui::MainWindow *ui;

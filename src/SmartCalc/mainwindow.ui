@@ -1476,7 +1476,7 @@
      </size>
     </property>
     <property name="text">
-     <string/>
+     <string>x1</string>
     </property>
    </widget>
    <widget class="QPushButton" name="graphButton">

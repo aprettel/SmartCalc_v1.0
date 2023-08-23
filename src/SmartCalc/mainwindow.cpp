@@ -10,6 +10,11 @@ extern "C" {
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
+
+  ui->lineEdit->setReadOnly(true);
+  ui->lineEdit_2->setReadOnly(true);
+  ui->lineEdit_3->setReadOnly(true);
+
   // удаление
   connect(ui->pushButton_AC, SIGNAL(clicked()), this, SLOT(AC_click()));
   connect(ui->pushButton_C, SIGNAL(clicked()), this, SLOT(C_click()));
@@ -189,59 +194,81 @@ void MainWindow::AC_click() {
 
 void MainWindow::equal_click() {
   QString expression = ui->lineEdit->text();
-  // Проверка наличия числа или операции перед скобкой
-  if (expression.contains(")(") || expression.startsWith(")")) {
+
+  // Проверка на наличие ошибок в выражении
+  if (!isValidExpression(expression)) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");
     return;
   }
 
-  // Проверка наличия точки перед или после другой точки
-  QRegularExpression decimalPointRegex("\\.\\d*\\.");
-
-  if (decimalPointRegex.match(expression).hasMatch()) {
-    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
-    ui->lineEdit->setText("Error");
-    return;
-  }
-
-  // Проверка правильного использования скобок
-  int openParenthesesCount = expression.count("(");
-  int closeParenthesesCount = expression.count(")");
-  if (openParenthesesCount != closeParenthesesCount) {
-    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
-    ui->lineEdit->setText("Error");
-    return;
-  }
-
-  if (expression.contains(" ") || expression.startsWith(" ") || expression.contains("  ")) {
-      QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
-      ui->lineEdit->setText("Error");
-      return;
-  }
-
-  QRegularExpression validExpression(
-      "[\\+\\%\\-\\*/"
-      "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
-  QRegularExpressionValidator validatorExpression(validExpression, this);
-  int pos = 0;
-  QValidator::State state = validatorExpression.validate(expression, pos);
-
-  if (state != QValidator::Acceptable) {
-    QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
-    ui->lineEdit->setText("Error");
-    return;
-  }
-
+  // Преобразование выражения в ОПН
   char rpn[MAX_EXPRESSION_LENGTH];
   infixToRPN(expression.toStdString().c_str(), rpn);
+
+  // Вычисление результата
   double result = calculateRPN(rpn);
 
+  // Проверка на наличие ошибок в результате
   if (std::isinf(result) || std::isnan(result)) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");
     return;
   }
 
+  // Отображение результата
   ui->lineEdit->setText(QString::number(result, 'f', 6));
+}
+
+bool MainWindow::isValidExpression(const QString& expression) {
+  // Проверка наличия точки
+  QRegularExpression invalidNumberRegex("\\d+\\.\\d+\\.");
+  if (expression.contains(invalidNumberRegex)) {
+    return false;
+  }
+
+  if (expression.contains("..") ||
+      (expression.contains("\\.\\d") && expression.indexOf("\\.\\d") != 0) ||
+      (expression.contains("\\d\\.") && expression.indexOf("\\d\\.") != 0)) {
+    return false;
+  }
+
+  // Проверка правильного использования скобок
+  int openParenthesesCount = expression.count("(");
+  int closeParenthesesCount = expression.count(")");
+  if (expression.contains(")(") ||
+      openParenthesesCount != closeParenthesesCount) {
+    return false;
+  }
+
+  // Проверка наличия пустых скобок
+  QRegularExpression emptyParenthesesRegex("\\(\\s*\\)");
+  if (expression.contains(emptyParenthesesRegex)) {
+      return false;
+  }
+
+  // Проверка наличия недопустимых последовательностей операторов
+  QRegularExpression multipleOperatorRegex("[\\+\\-\\*/%^]{2,}");
+  if (expression.contains(multipleOperatorRegex)) {
+    return false;
+  }
+
+  QRegularExpression numberBeforeDotRegex("(?<!\\d)00\\.[\\d]+");
+  if (expression.contains(numberBeforeDotRegex)) {
+    return false;
+  }
+
+  // Проверка выражения с помощью валидатора
+  QRegularExpression validExpression(
+      "[\\+\\%\\-\\*/"
+      "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
+  QRegularExpressionValidator validatorExpression(validExpression, this);
+  int pos = 0;
+  QString expressionCopy = expression;
+  QValidator::State state = validatorExpression.validate(expressionCopy, pos);
+  if (state != QValidator::Acceptable) {
+    return false;
+  }
+
+  return true;
 }
