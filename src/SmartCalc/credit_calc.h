@@ -13,7 +13,6 @@ double A_Overpayment(double credit_sum, double period, double monthly);
 double TotalPayout(double credit_sum, double overpay);
 double D_MonthlyPayment(double credit_sum, double period, double percent);
 double D_Overpayment(double credit_sum, double period, double percent);
-double payment_type(char* type_pay, double credit_sum, double period,
-                    double percent);
+double D_Last(double credit_sum, double period, double monthly, double percent);
 
 #endif  // CREDIT_CALC_H

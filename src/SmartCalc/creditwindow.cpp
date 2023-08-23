@@ -73,6 +73,7 @@ void AnotherWindow::equal_click() {
   double monthly = 0.0;
   double overpay = 0.0;
   double total = 0.0;
+  double last_pay = 0.0;
 
   if (ui->radioButton_A->isChecked()) {
     monthly = A_MonthlyPayment(credit_sum, period, percent);
@@ -82,13 +83,21 @@ void AnotherWindow::equal_click() {
     monthly = D_MonthlyPayment(credit_sum, period, percent);
     overpay = D_Overpayment(credit_sum, period, percent);
     total = TotalPayout(credit_sum, overpay);
+    last_pay = D_Last(credit_sum, period, monthly, percent);
   } else {
     QMessageBox::warning(this, "Ошибка",
                          "Необходимо выбрать тип ежемесячного платежа");
     return;
   }
 
-  ui->textBrowser_monthly->setText(QString::number(monthly, 'f', 2));
+  if (ui->radioButton_A->isChecked()) {
+    ui->textBrowser_monthly->setText(QString::number(monthly, 'f', 2));
+  } else if (ui->radioButton_D->isChecked()) {
+    QString formattedMonthly = QString::number(monthly, 'f', 2);
+    QString formattedLastPay = QString::number(last_pay, 'f', 2);
+    ui->textBrowser_monthly->setText(formattedMonthly + " ... " +
+                                     formattedLastPay);
+  }
   ui->textBrowser_overpay->setText(QString::number(overpay, 'f', 2));
   ui->textBrowser_total->setText(QString::number(total, 'f', 2));
 }

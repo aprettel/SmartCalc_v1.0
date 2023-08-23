@@ -1404,6 +1404,9 @@
       <height>40</height>
      </size>
     </property>
+    <property name="placeholderText">
+     <string>0</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton_X">
     <property name="enabled">
@@ -1475,8 +1478,17 @@
       <height>40</height>
      </size>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="whatsThis">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
-     <string>x1</string>
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>min X</string>
     </property>
    </widget>
    <widget class="QPushButton" name="graphButton">
@@ -1551,6 +1563,9 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="placeholderText">
+     <string>max X</string>
     </property>
    </widget>
    <widget class="QCustomPlot" name="plot" native="true">

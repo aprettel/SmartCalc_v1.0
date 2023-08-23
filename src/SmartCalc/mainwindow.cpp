@@ -244,7 +244,7 @@ bool MainWindow::isValidExpression(const QString& expression) {
   // Проверка наличия пустых скобок
   QRegularExpression emptyParenthesesRegex("\\(\\s*\\)");
   if (expression.contains(emptyParenthesesRegex)) {
-      return false;
+    return false;
   }
 
   // Проверка наличия недопустимых последовательностей операторов
