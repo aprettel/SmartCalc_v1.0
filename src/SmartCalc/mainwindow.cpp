@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 
-#include "calculator.c"
+#include "../calculator.c"
 #include "ui_mainwindow.h"
 
 extern "C" {
-#include "calculator.h"
+#include "../calculator.h"
 }
 
 MainWindow::MainWindow(QWidget* parent)
@@ -94,7 +94,7 @@ void MainWindow::on_graphButton_clicked() {
     if (x1 < x2) {
       while (x1 <= x2) {
         QString exprWithValue = expr;
-        exprWithValue.replace("x", QString::number(x1, 'f', 6));
+        exprWithValue.replace("x", QString::number(x1, 'f', 7));
 
         char rpn[MAX_EXPRESSION_LENGTH];
         infixToRPN(exprWithValue.toStdString().c_str(), rpn);
@@ -220,7 +220,7 @@ void MainWindow::equal_click() {
   }
 
   // Отображение результата
-  ui->lineEdit->setText(QString::number(result, 'f', 6));
+  ui->lineEdit->setText(QString::number(result, 'f', 7));
 }
 
 bool MainWindow::isValidExpression(const QString& expression) {

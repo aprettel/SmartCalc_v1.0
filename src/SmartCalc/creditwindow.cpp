@@ -1,10 +1,10 @@
 #include "creditwindow.h"
 
-#include "credit_calc.c"
+#include "../credit_calc.c"
 #include "ui_creditwindow.h"
 
 extern "C" {
-#include "credit_calc.h"
+#include "../credit_calc.h"
 }
 
 AnotherWindow::AnotherWindow(QWidget *parent)
@@ -18,8 +18,8 @@ AnotherWindow::AnotherWindow(QWidget *parent)
 AnotherWindow::~AnotherWindow() { delete ui; }
 
 void AnotherWindow::on_mainButton_clicked() {
-  this->close();      // Закрываем окно
-  emit MainWindow();  // И вызываем сигнал на открытие главного окна
+  this->close();
+  emit MainWindow();
 }
 
 void AnotherWindow::equal_click() {

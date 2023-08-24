@@ -15,7 +15,6 @@ typedef struct {
 
 void initStack(Stack* stack);
 int isEmpty(Stack* stack);
-int isFull(Stack* stack);
 void push(Stack* stack, double value);
 double pop(Stack* stack);
 int isOperator(char c);

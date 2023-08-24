@@ -4,23 +4,9 @@ void initStack(Stack* stack) { stack->top = -1; }
 
 int isEmpty(Stack* stack) { return stack->top == -1; }
 
-int isFull(Stack* stack) { return stack->top == MAX_EXPRESSION_LENGTH - 1; }
+void push(Stack* stack, double value) { stack->data[++stack->top] = value; }
 
-void push(Stack* stack, double value) {
-  if (isFull(stack)) {
-    printf("Стэк полон\n");
-    exit(1);
-  }
-  stack->data[++stack->top] = value;
-}
-
-double pop(Stack* stack) {
-  // if (isEmpty(stack)) {
-  //     printf("Стэк пуст\n");
-  //     exit(1);
-  // }
-  return stack->data[stack->top--];
-}
+double pop(Stack* stack) { return stack->data[stack->top--]; }
 
 int isOperator(char c) {
   return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';

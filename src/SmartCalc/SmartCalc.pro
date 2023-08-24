@@ -12,15 +12,15 @@ SOURCES += \
     creditwindow.cpp \
     main.cpp \
     mainwindow.cpp \
-    calculator.c \
-    credit_calc.c \
+    ../calculator.c \
+    ../credit_calc.c \
     qcustomplot.cpp
 
 HEADERS += \
     creditwindow.h \
     mainwindow.h \
-    calculator.h \
-    credit_calc.h \
+    ../calculator.h \
+    ../credit_calc.h \
     qcustomplot.h
 
 FORMS += \
