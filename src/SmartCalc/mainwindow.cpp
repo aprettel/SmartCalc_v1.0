@@ -101,15 +101,12 @@ void MainWindow::on_graphButton_clicked() {
         double result = calculateRPN(rpn);
         xData.append(x1);
         yData.append(result);
-
         x1 += step;
       }
 
       ui->plot->graph(0)->setData(xData, yData);
       ui->plot->xAxis->setRange(xData.first(), xData.last());
-      ui->plot->yAxis->setRange(
-          *std::min_element(yData.constBegin(), yData.constEnd()),
-          *std::max_element(yData.constBegin(), yData.constEnd()));
+      ui->plot->yAxis->setRange(-5, 5);
 
       QCPAxisRect* rect = ui->plot->axisRect();
       rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
@@ -146,17 +143,23 @@ void MainWindow::num_and_funcs_click() {
 void MainWindow::change_X() {
   ui->lineEdit_2->setFocus();
   QString inputValue = ui->lineEdit_2->text();
-  double X = inputValue.toDouble();
 
-  // подставить значение X в выражение
-  QString expression = ui->lineEdit->text();
-  if (expression.contains("x")) {  // проверка наличия символа "x"
-    expression.replace("x", QString::number(X));
-    // обновить значение выражения в lineEdit
-    ui->lineEdit->setText(expression);
-    ui->lineEdit_2->setText("");
+  bool ok;
+  double X = inputValue.toDouble(&ok);
+
+  if (ok) {
+    QString expression = ui->lineEdit->text();
+
+    if (expression.contains("x")) {
+      expression.replace("x", QString::number(X));
+      ui->lineEdit->setText(expression);
+      ui->lineEdit_2->setText("");
+    } else {
+      QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
+    }
   } else {
-    QMessageBox::warning(this, "Ошибка", "Символ 'x' не найден в выражении.");
+    QMessageBox::warning(this, "Ошибка",
+                         "Введено некорректное значение для X.");
   }
 }
 
@@ -255,6 +258,13 @@ bool MainWindow::isValidExpression(const QString& expression) {
 
   QRegularExpression numberBeforeDotRegex("(?<!\\d)00\\.[\\d]+");
   if (expression.contains(numberBeforeDotRegex)) {
+    return false;
+  }
+
+  // Проверка наличия букв перед и после скобками
+  QRegularExpression invalidCharacterRegex("[a-zA-Z]+\\(|\\)[a-zA-Z]+");
+  if (expression.contains(invalidNumberRegex) ||
+      expression.contains(invalidCharacterRegex)) {
     return false;
   }
 
