@@ -10,8 +10,6 @@ extern "C" {
 AnotherWindow::AnotherWindow(QWidget *parent)
     : QWidget(parent), ui(new Ui::AnotherWindow) {
   ui->setupUi(this);
-
-  // подсчитываем
   connect(ui->pushButton_equal, SIGNAL(clicked()), this, SLOT(equal_click()));
 }
 
@@ -28,7 +26,6 @@ void AnotherWindow::equal_click() {
   QString percent_str = ui->lineEdit_3->text();
 
   bool ok;
-
   double credit_sum = credit_sum_str.toDouble(&ok);
   if (!ok || credit_sum <= 0) {
     QMessageBox::warning(
