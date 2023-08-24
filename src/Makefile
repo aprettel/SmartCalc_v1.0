@@ -4,6 +4,9 @@ VALGRIND=valgrind --leak-check=full --leak-resolution=med -s
 OS:= $(shell uname -s)
 LINFLAGS=-lcheck -pthread -lrt -lm -lsubunit
 #TC_FLAGS += $(shell pkg-config --cflags check) $(shell pkg-config --libs check)
+SRCFILE = calculator.c credit_calc.c
+OBJECTS = calculator.o credit_calc.o
+TESTS =  test.c
 
 ifeq ($(OS), Linux)
 	FLAGS = -lcheck -lm -lpthread -lrt -lsubunit 
@@ -16,33 +19,36 @@ endif
 all: clean test
 
 calculator.a:
-	gcc $(CFLAGS) $(LINFLAGS) -c calculator.c 
-	ar r calculator.a  calculator.o
+	$(CC) -c $(SRCFILE)
+	@ar rcs calculator.a $(OBJECTS)
 	ranlib calculator.a
 
 test: calculator.a
 ifeq ($(OS), Darwin)
-	gcc test.c calculator.a  -o test `pkg-config --cflags --libs check` -lcheck -lpthread #-fsanitize=address
+	gcc $(TESTS) calculator.a -o test $(shell pkg-config --cflags --libs check) -lcheck -lpthread #-fsanitize=address
 	./test
+	rm -rf *.o *.a
 else
-	gcc test.c calculator.a -o test $(LINFLAGS)
+	gcc $(TESTS) calculator.a -o test $(LINFLAGS)
 	./test
+	rm -rf *.o *.a
 endif
 
 gcov_report: clean
 ifeq ($(OS), Darwin)
-	gcc --coverage test.c -o test calculator.c `pkg-config --cflags --libs check`
+	gcc --coverage $(TESTS) -o test $(SRCFILE) $(shell pkg-config --cflags --libs check) -lcheck
 	./test
-	gcov -f calculator.gcda
-	lcov -t "test" -o test.info -c -d .   
-	genhtml -o report test.info
+	gcov -f s21_decimal.gcda
+	lcov -t "s21_test" -o s21_test.info -c -d .   
+	genhtml -o report s21_test.info
 	open ./report/index.html
 else
-	gcc --coverage test.c -o test calculator.c $(LINFLAGS)
+	# sudo apt-get install xdg-utils
+	gcc --coverage $(TESTS) -o test $(SRCFILE) $(LINFLAGS)
 	./test
-	gcov -f calculator.gcda
-	lcov -t "test" -o test.info -c -d .  
-	genhtml -o report test.info
+	gcov -f s21_decimal.gcda
+	lcov -t "s21_test" -o s21_test.info -c -d .  
+	genhtml -o report s21_test.info
 	xdg-open ./report/index.html
 endif
 

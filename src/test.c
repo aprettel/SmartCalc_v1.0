@@ -1,6 +1,7 @@
 #include <check.h>
 
 #include "calculator.h"
+#include "credit_calc.h"
 
 START_TEST(rpn_1) {
   char result[255] = {'\0'};
@@ -280,6 +281,68 @@ START_TEST(calc_7) {
 }
 END_TEST
 
+START_TEST(credit_1) {
+  double result = 0.0;
+  double credit_sum = 100000.0;
+  double period = 10.0;  // месяцев
+  double percent = 10.0;
+  result = A_MonthlyPayment(credit_sum, period, percent);
+  ck_assert_double_eq(result, 10464.04);
+}
+END_TEST
+
+START_TEST(credit_2) {
+  double result = 0.0;
+  double credit_sum = 10000.0;
+  double period = 10.0;  // месяцев
+  double monthly = 1046.40;
+  result = A_Overpayment(credit_sum, period, monthly);
+  ck_assert_double_eq(result, 464.00);
+}
+END_TEST
+
+START_TEST(credit_3) {
+  double result = 0.0;
+  double credit_sum = 1000.0;
+  double overpay = 46.40;
+  result = TotalPayout(credit_sum, overpay);
+  ck_assert_double_eq(result, 1046.40);
+}
+END_TEST
+
+START_TEST(credit_4) {
+  double result = 0.0;
+  double credit_sum = 123123.0;
+  double period = 12.0;  // месяцев
+  double percent = 23.0;
+  result = D_MonthlyPayment(credit_sum, period, percent);
+  double roundedRes = round(result * 100) / 100;
+  ck_assert_double_eq(roundedRes, 12620.11);
+}
+END_TEST
+
+START_TEST(credit_5) {
+  double result = 0.0;
+  double credit_sum = 123456.0;
+  double period = 5.0 * 12.0;  // лет
+  double monthly = 4423.84;
+  double percent = 23.0;
+  result = D_Last(credit_sum, period, monthly, percent);
+  double roundedRes = round(result * 100) / 100;
+  ck_assert_double_eq(roundedRes, 2097.04);
+}
+END_TEST
+
+START_TEST(credit_6) {
+  double result = 0.0;
+  double credit_sum = 123456.0;
+  double period = 5.0 * 12.0;  // лет
+  double percent = 23.0;
+  result = D_Overpayment(credit_sum, period, percent);
+  ck_assert_double_eq(result, 72170.32);
+}
+END_TEST
+
 int main(void) {
   Suite *s1 = suite_create("Core");
   TCase *tc1_1 = tcase_create("Core");
@@ -328,6 +391,13 @@ int main(void) {
   tcase_add_test(tc1_1, calc_5);
   tcase_add_test(tc1_1, calc_6);
   tcase_add_test(tc1_1, calc_7);
+
+  tcase_add_test(tc1_1, credit_1);
+  tcase_add_test(tc1_1, credit_2);
+  tcase_add_test(tc1_1, credit_3);
+  tcase_add_test(tc1_1, credit_4);
+  tcase_add_test(tc1_1, credit_5);
+  tcase_add_test(tc1_1, credit_6);
 
   srunner_run_all(sr, CK_ENV);
   nf = srunner_ntests_failed(sr);
