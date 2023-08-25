@@ -95,7 +95,8 @@ endif
 
 clean:
 	rm -rf *.o *.a *.out *.gcda *.gcno 
-	rm -rf test a.out 
+	rm -rf test a.out
 	rm -rf *.info && rm -rf *.gcov
 	rm -rf build-SmartCalc-Desktop_x86_darwin_generic_mach_o_64bit-Debug/
 	rm -rf ./report/
+	rm -rf ../SmartCalc.tar
