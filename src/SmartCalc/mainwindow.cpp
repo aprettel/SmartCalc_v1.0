@@ -250,6 +250,12 @@ bool MainWindow::isValidExpression(const QString& expression) {
     return false;
   }
 
+  // Проверка наличия числа перед скобкой после точки
+  QRegularExpression numberBeforeEmptyParenthesesRegex("\\d+\\.\\s*\\)");
+  if (expression.contains(numberBeforeEmptyParenthesesRegex)) {
+    return false;
+  }
+
   // Проверка наличия недопустимых последовательностей операторов
   QRegularExpression multipleOperatorRegex("[\\+\\-\\*/%^]{2,}");
   if (expression.contains(multipleOperatorRegex)) {
@@ -258,13 +264,6 @@ bool MainWindow::isValidExpression(const QString& expression) {
 
   QRegularExpression numberBeforeDotRegex("(?<!\\d)00\\.[\\d]+");
   if (expression.contains(numberBeforeDotRegex)) {
-    return false;
-  }
-
-  // Проверка наличия букв перед и после скобками
-  QRegularExpression invalidCharacterRegex("[a-zA-Z]+\\(|\\)[a-zA-Z]+");
-  if (expression.contains(invalidNumberRegex) ||
-      expression.contains(invalidCharacterRegex)) {
     return false;
   }
 
