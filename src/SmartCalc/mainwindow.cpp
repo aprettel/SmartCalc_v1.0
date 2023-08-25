@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  ui->lineEdit->setReadOnly(true);
+  //  ui->lineEdit->setReadOnly(true);
   ui->lineEdit_2->setReadOnly(true);
   ui->lineEdit_3->setReadOnly(true);
 
@@ -208,8 +208,6 @@ void MainWindow::equal_click() {
   // Преобразование выражения в ОПН
   char rpn[MAX_EXPRESSION_LENGTH];
   infixToRPN(expression.toStdString().c_str(), rpn);
-
-  // Вычисление результата
   double result = calculateRPN(rpn);
 
   // Проверка на наличие ошибок в результате
@@ -219,55 +217,51 @@ void MainWindow::equal_click() {
     return;
   }
 
-  // Отображение результата
   ui->lineEdit->setText(QString::number(result, 'f', 7));
 }
 
 bool MainWindow::isValidExpression(const QString& expression) {
-  // Проверка наличия точки
   QRegularExpression invalidNumberRegex("\\d+\\.\\d+\\.");
-  if (expression.contains(invalidNumberRegex)) {
-    return false;
-  }
-
-  if (expression.contains("..") ||
+  QRegularExpression invalidDotRegex("((?<=\\()\\.\\d+)");
+  if (expression.contains(invalidNumberRegex) || expression.contains("..") ||
       (expression.contains("\\.\\d") && expression.indexOf("\\.\\d") != 0) ||
-      (expression.contains("\\d\\.") && expression.indexOf("\\d\\.") != 0)) {
+      (expression.contains("\\d\\.") && expression.indexOf("\\d\\.") != 0) ||
+      (expression.contains(".") && expression.indexOf(".") == 0) ||
+      expression.contains(invalidDotRegex)) {
     return false;
   }
 
-  // Проверка правильного использования скобок
   int openParenthesesCount = expression.count("(");
   int closeParenthesesCount = expression.count(")");
   if (expression.contains(")(") ||
-      openParenthesesCount != closeParenthesesCount) {
+      openParenthesesCount != closeParenthesesCount ||
+      expression.contains("\\).+") || expression.contains("\\).-") ||
+      expression.contains("\\).%") || expression.contains("\\).*") ||
+      expression.contains("\\)./") || expression.contains("\\).^") ||
+      expression.contains(").")) {
     return false;
   }
 
-  // Проверка наличия пустых скобок
   QRegularExpression emptyParenthesesRegex("\\(\\s*\\)");
-  if (expression.contains(emptyParenthesesRegex)) {
+  if (expression.contains(emptyParenthesesRegex) ||
+      expression.contains("\\d+\\.\\s*\\)")) {
     return false;
   }
 
-  // Проверка наличия числа перед скобкой после точки
-  QRegularExpression numberBeforeEmptyParenthesesRegex("\\d+\\.\\s*\\)");
-  if (expression.contains(numberBeforeEmptyParenthesesRegex)) {
-    return false;
-  }
-
-  // Проверка наличия недопустимых последовательностей операторов
   QRegularExpression multipleOperatorRegex("[\\+\\-\\*/%^]{2,}");
-  if (expression.contains(multipleOperatorRegex)) {
+  if (expression.contains(multipleOperatorRegex) ||
+      expression.contains("(?<!\\d)00\\.[\\d]+")) {
     return false;
   }
 
-  QRegularExpression numberBeforeDotRegex("(?<!\\d)00\\.[\\d]+");
-  if (expression.contains(numberBeforeDotRegex)) {
+  QRegularExpression regExp(
+      "\\d+[\\.]?\\d*\\s*(sin|cos|tan|asin|acos|atan|sqrt|ln|log)\\s*\\(");
+  QRegularExpression operatorRegExp(
+      "(\\.|\\()\\s*(sin|cos|tan|asin|acos|atan|sqrt|ln|log)\\s*\\(");
+  if (expression.contains(regExp) || expression.contains(operatorRegExp)) {
     return false;
   }
 
-  // Проверка выражения с помощью валидатора
   QRegularExpression validExpression(
       "[\\+\\%\\-\\*/"
       "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
