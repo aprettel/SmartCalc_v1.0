@@ -193,11 +193,41 @@ void MainWindow::AC_click() {
 void MainWindow::equal_click() {
   QString expression = ui->lineEdit->text();
   static QRegularExpression leftBracketRegex("(\\d)(\\()");
-  static QRegularExpression rightBracketRegex("(\\))(\\d)");
-  static QRegularExpression twoBracketRegex("(\\d\\))(\\(\\d)");
   expression.replace(leftBracketRegex, "\\1*\\2");
+
+  static QRegularExpression rightBracketRegex("(\\))(\\d)");
   expression.replace(rightBracketRegex, "\\1*\\2");
+
+  static QRegularExpression twoBracketRegex("(\\d\\))(\\(\\d)");
   expression.replace(twoBracketRegex, "\\1*\\2");
+
+  static QRegularExpression numberSinRegex("(\\d)(sin)");
+  expression.replace(numberSinRegex, "\\1*\\2");
+
+  static QRegularExpression numberCosRegex("(\\d)(cos)");
+  expression.replace(numberCosRegex, "\\1*\\2");
+
+  static QRegularExpression numberTanRegex("(\\d)(tan)");
+  expression.replace(numberTanRegex, "\\1*\\2");
+
+  static QRegularExpression numberAsinRegex("(\\d)(asin)");
+  expression.replace(numberAsinRegex, "\\1*\\2");
+
+  static QRegularExpression numberAcosRegex("(\\d)(acos)");
+  expression.replace(numberAcosRegex, "\\1*\\2");
+
+  static QRegularExpression numberAtanRegex("(\\d)(atan)");
+  expression.replace(numberAtanRegex, "\\1*\\2");
+
+  static QRegularExpression numberLnRegex("(\\d)(ln)");
+  expression.replace(numberLnRegex, "\\1*\\2");
+
+  static QRegularExpression numberLogRegex("(\\d)(log)");
+  expression.replace(numberLogRegex, "\\1*\\2");
+
+  static QRegularExpression numberSqrtRegex("(\\d)(sqrt)");
+  expression.replace(numberSqrtRegex, "\\1*\\2");
+
   if (!isValidExpression(expression)) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");
