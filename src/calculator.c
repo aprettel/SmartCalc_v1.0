@@ -186,10 +186,9 @@ double calculateRPN(char* rpn) {
           result = operand1 + operand2;
           break;
         case '-':
-          if (strlen(token) >
-              1) {  // проверяем, является ли оператор унарным минусом
+          if (strlen(token) > 1) {
             push(&stack, -operand2);
-            continue;  // переходим к следующей итерации цикла while
+            continue;
           } else {
             result = operand1 - operand2;
           }

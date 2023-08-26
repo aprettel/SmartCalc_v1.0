@@ -11,23 +11,17 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  //  ui->lineEdit->setReadOnly(true);
+  ui->lineEdit->setReadOnly(true);
   ui->lineEdit_2->setReadOnly(true);
   ui->lineEdit_3->setReadOnly(true);
 
-  // удаление
   connect(ui->pushButton_AC, SIGNAL(clicked()), this, SLOT(AC_click()));
   connect(ui->pushButton_C, SIGNAL(clicked()), this, SLOT(C_click()));
-  // скобки
   connect(ui->pushButton_left, SIGNAL(clicked()), this,
           SLOT(num_and_funcs_click()));
   connect(ui->pushButton_right, SIGNAL(clicked()), this,
           SLOT(num_and_funcs_click()));
-
-  // X
   connect(ui->pushButton_X, SIGNAL(clicked()), this, SLOT(change_X()));
-
-  // вводимые кнопки
   QPushButton* buttons[] = {
       ui->pushButton_0,    ui->pushButton_1,    ui->pushButton_2,
       ui->pushButton_3,    ui->pushButton_4,    ui->pushButton_5,
@@ -43,7 +37,6 @@ MainWindow::MainWindow(QWidget* parent)
     connect(button, SIGNAL(clicked()), this, SLOT(num_and_funcs_click()));
   }
 
-  // подсчитываем
   connect(ui->pushButton_equal, SIGNAL(clicked()), this, SLOT(equal_click()));
 }
 
@@ -63,7 +56,7 @@ void MainWindow::on_graphButton_clicked() {
   ui->plot->setInteractions(QCP::iRangeZoom | QCP::iRangeDrag);
 
   QString expr = ui->lineEdit->text();
-  QRegularExpression validExpression(
+  static QRegularExpression validExpression(
       "[\\+\\%\\-\\*/"
       "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
   if (!validExpression.match(expr).hasMatch()) {
@@ -72,13 +65,13 @@ void MainWindow::on_graphButton_clicked() {
   }
 
   bool ok;
-  double x1 = ui->lineEdit_2->text().toDouble(&ok);  // min X
+  double x1 = ui->lineEdit_2->text().toDouble(&ok);
   if (!ok) {
     QMessageBox::warning(this, "Ошибка",
                          "Некорректное значение минимального X.");
     return;
   }
-  double x2 = ui->lineEdit_3->text().toDouble(&ok);  // max X
+  double x2 = ui->lineEdit_3->text().toDouble(&ok);
   if (!ok) {
     QMessageBox::warning(this, "Ошибка",
                          "Некорректное значение максимального X.");
@@ -197,32 +190,29 @@ void MainWindow::AC_click() {
 
 void MainWindow::equal_click() {
   QString expression = ui->lineEdit->text();
-
-  // Проверка на наличие ошибок в выражении
+  static QRegularExpression regex("(\\d)(\\()");
+  expression.replace(regex, "\\1*\\2");
   if (!isValidExpression(expression)) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");
     return;
   }
 
-  // Преобразование выражения в ОПН
   char rpn[MAX_EXPRESSION_LENGTH];
   infixToRPN(expression.toStdString().c_str(), rpn);
   double result = calculateRPN(rpn);
 
-  // Проверка на наличие ошибок в результате
   if (std::isinf(result) || std::isnan(result)) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");
     return;
   }
-
   ui->lineEdit->setText(QString::number(result, 'f', 7));
 }
 
 bool MainWindow::isValidExpression(const QString& expression) {
-  QRegularExpression invalidNumberRegex("\\d+\\.\\d+\\.");
-  QRegularExpression invalidDotRegex("((?<=\\()\\.\\d+)");
+  static QRegularExpression invalidNumberRegex("\\d+\\.\\d+\\.");
+  static QRegularExpression invalidDotRegex("((?<=\\()\\.\\d+)");
   if (expression.contains(invalidNumberRegex) || expression.contains("..") ||
       (expression.contains("\\.\\d") && expression.indexOf("\\.\\d") != 0) ||
       (expression.contains("\\d\\.") && expression.indexOf("\\d\\.") != 0) ||
@@ -242,27 +232,31 @@ bool MainWindow::isValidExpression(const QString& expression) {
     return false;
   }
 
-  QRegularExpression emptyParenthesesRegex("\\(\\s*\\)");
+  if (expression.contains("\\)+.") || expression.contains("\\)-.") ||
+      expression.contains("\\)%.") || expression.contains("\\)*.") ||
+      expression.contains("\\)/.") || expression.contains("\\)^.")) {
+    return false;
+  }
+
+  static QRegularExpression emptyParenthesesRegex("\\(\\s*\\)");
   if (expression.contains(emptyParenthesesRegex) ||
       expression.contains("\\d+\\.\\s*\\)")) {
     return false;
   }
 
-  QRegularExpression multipleOperatorRegex("[\\+\\-\\*/%^]{2,}");
+  static QRegularExpression multipleOperatorRegex("[\\+\\-\\*/%^]{2,}");
   if (expression.contains(multipleOperatorRegex) ||
       expression.contains("(?<!\\d)00\\.[\\d]+")) {
     return false;
   }
 
-  QRegularExpression regExp(
+  static QRegularExpression regExp(
       "\\d+[\\.]?\\d*\\s*(sin|cos|tan|asin|acos|atan|sqrt|ln|log)\\s*\\(");
-  QRegularExpression operatorRegExp(
-      "(\\.|\\()\\s*(sin|cos|tan|asin|acos|atan|sqrt|ln|log)\\s*\\(");
-  if (expression.contains(regExp) || expression.contains(operatorRegExp)) {
+  if (expression.contains(regExp)) {
     return false;
   }
 
-  QRegularExpression validExpression(
+  static QRegularExpression validExpression(
       "[\\+\\%\\-\\*/"
       "\\.^\\(\\)\\s\\d|(?:(?:sin|cos|tan|asin|acos|atan|log|lg|sqrt)\\())]*");
   QRegularExpressionValidator validatorExpression(validExpression, this);
@@ -272,6 +266,5 @@ bool MainWindow::isValidExpression(const QString& expression) {
   if (state != QValidator::Acceptable) {
     return false;
   }
-
   return true;
 }

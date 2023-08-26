@@ -16,10 +16,9 @@ class AnotherWindow : public QWidget {
   ~AnotherWindow();
 
  signals:
-  void MainWindow();  // Сигнал для первого окна на открытие
+  void MainWindow();
 
  private slots:
-  // Слот-обработчик нажатия кнопки
   void on_mainButton_clicked();
   void equal_click();
 
