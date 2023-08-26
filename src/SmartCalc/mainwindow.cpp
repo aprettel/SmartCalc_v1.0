@@ -100,8 +100,8 @@ void MainWindow::on_graphButton_clicked() {
       ui->plot->graph(0)->setData(xData, yData);
       ui->plot->xAxis->setRange(xData.first(), xData.last());
       ui->plot->yAxis->setRange(
-              *std::min_element(yData.constBegin(), yData.constEnd()),
-              *std::max_element(yData.constBegin(), yData.constEnd()));
+          *std::min_element(yData.constBegin(), yData.constEnd()),
+          *std::max_element(yData.constBegin(), yData.constEnd()));
 
       QCPAxisRect* rect = ui->plot->axisRect();
       rect->setRangeZoomAxes(ui->plot->xAxis, ui->plot->yAxis);
