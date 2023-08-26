@@ -190,8 +190,12 @@ void MainWindow::AC_click() {
 
 void MainWindow::equal_click() {
   QString expression = ui->lineEdit->text();
-  static QRegularExpression regex("(\\d)(\\()|(\\))(\\d)");
-  expression.replace(regex, "\\1*\\2");
+  static QRegularExpression leftBracketRegex("(\\d)(\\()");
+  static QRegularExpression rightBracketRegex("(\\))(\\d)");
+  static QRegularExpression twoBracketRegex("(\\d\\))(\\(\\d)");
+  expression.replace(leftBracketRegex, "\\1*\\2");
+  expression.replace(rightBracketRegex, "\\1*\\2");
+  expression.replace(twoBracketRegex, "\\1*\\2");
   if (!isValidExpression(expression)) {
     QMessageBox::warning(this, "Ошибка", "Недопустимое выражение!");
     ui->lineEdit->setText("Error");

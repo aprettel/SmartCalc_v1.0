@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+<file alias="icon.icns">/Users/aethando/Desktop/C7_SmartCalc_v1.0-1/src/SmartCalc/icon.icns</file>
+</qresource>
+</RCC>
